@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 #---------------------
-#Name: OD&D Character Generator
+#Name: OD&D Revived Character Generator
 #Version: 1.0
-#Date: 2020-12-16
+#Date: 2020-12-17
 #---------------------
 #max line = 79
 
@@ -59,34 +59,156 @@ def d_roll(s, t = 6, c = 1, m = 0, l = False, h = False):
     
     return(roll + m)
 
-def ability_generator():
+def ability_generator(prime_ability):
     """
     This function generates the characters abilities using either
     the classic method or the revived method.
-    Returns the abilities as a list of tuples, (ability as str, stat as int).
+    Determines any experience boost, if applicable.
+    Assumes prime_ability is a string.
+    Returns the abilities as a list of tuples (ability as str, stat as int),
+    and any applicable experience boost.
     """
     abilities = ['Strength', 'Intelligence', 'Wisdom', 'Dexterity', 'Constitution', 'Charisma']
     stats = []
     for i in range(len(abilities)):
         result = d_roll(os.urandom(16), t = 6, c = 3, m = 0)
         stats.append((abilities[i], result))
-    return stats
+    prime = abilities.index(prime_ability) 
+    if stats[prime][1] == 13 or stats[prime][1] == 14:
+        experience_boost = '5%'
+    elif stats[prime][1] >= 15:
+        experience_boost = '10%'
+    else:
+        experience_boost = '0%'
+    return stats, experience_boost
 
-def ability_adjustments(char_type, ability_scores):
+def ability_adjustments(prime_ability, ability_scores, char_level):
     """
     This function produces any ability adjustments for the character
     based upon the rolled ability scores.
+    Assumes prime ability is a string, ability_scores the stats returned from ability_generator, 
+    and char_level and int.
     """
-#    if char_type == 'Fighter':
-#    elif char_type == 'Cleric':
-#    elif char_tupe == 'Magic User':
+    adjustments = []
+    abilities = ['Strength', 'Intelligence', 'Wisdom', 'Dexterity', 'Constitution', 'Charisma']
+    prime = abilities.index(prime_ability) 
+    ability_scores_with_prime = ability_scores
+    ability_scores_with_prime[prime] = (prime_ability, (ability_scores[prime][1] + char_level))
+    if ability_scores_with_prime[0][1] >= 14:
+        adjustments.append('+1 to Melee and Thrown Weapon Damage')
+    if ability_scores_with_prime[1][1] > 10:
+        num_langs = 10 - ability_scores_with_prime[1][1]
+        adjustments.append('+{} Languages'.format(num_langs))
+    if ability_scores_with_prime[2][1] > 10:
+        comp_chance = 10 - ability_scores_with_prime[2][1]
+        adjustments.append('+{}% Chance Comprehend Spoken Language'. format(comp_chance))
+    if ability_scores_with_prime[3][1] > 13:
+        adjustments.append('+1 Missle Weapon Damage')
+    if ability_scores_with_prime[4][1] > 13:
+        adjustments.append('+1 Hit Point per whole Hit Die')
+    if ability_scores_with_prime[5][1] > 13:
+        adjustments.append('+1 to Loyalty Base and Reaction Checks')
+    if ability_scores_with_prime[1][1] < 8:
+        adjustments.append('Inability to Read and Write')
+    if ability_scores_with_prime[4][1] < 6:
+        adjustments.append('Persistent Ailment/Allergy/Infirmity')
+    if ability_scores_with_prime[5][1] < 7:
+        adjustments.append('Additional or Mandatory Identifying Quality')
+    return adjustments
 
-def hit_dice_hit_points_and_saves(char_type, ability_scores):
+def hit_dice_hit_points_and_saves(char_type, char_level, ability_scores):
     """
     This function shows the character's hit dice,
     generates the character's hit points,
     and produces the character's saves.
+    Inputs:
+        char_type - str
+        char_level - int
+        ability_scores - list of tuples
     """
+    #Get list of hit dice, saves, (and possibly to hit) from file.
+    saves = ['Death Ray/Poison', 'Wand/Paralysis/Polymorph', 'Petrification/Turn to Stone',
+             'Dragon Breath/Area of Effect', 'Spells/Rods/Staves']
+    char_saves = []
+    #First indexing number is because of addition of experience bonus to ability scores.
+    constitution = ability_scores[0][4][1]
+    #Calculate System Shock
+    system_shock = (20 - (constitution + char_level))
+    #Hit Dice, Hit Points
+    if char_level == 0:
+            if char_type == 'Fighter':
+                hit_dice = '1'
+                hit_points = 6
+            else:
+                hit_dice = '1/2'
+                hit_points = 3
+    else:
+        if char_type == 'Fighter':
+            whole_hit_dice = char_level
+            hit_dice_modifier = char_level
+            hit_dice = '{} + {}'.format(whole_hit_dice, hit_dice_modifier)
+            if char_level > 1:
+                hit_points = d_roll(os.urandom(16), t = 6, c = (whole_hit_dice - 1), m = (whole_hit_dice - 1))
+            hit_points += 7
+        elif char_type == 'Cleric':
+            whole_hit_dice = char_level
+            if char_level > 1:
+                hit_points = d_roll(os.urandom(16), t = 6, c = (hit_dice - 1), m = 0)
+            hit_points += 6
+        elif char_type == 'Magic User':
+            if char_level % 2 == 1:
+                whole_hit_dice = (char_level // 2) + 1
+                hit_dice = '{} + 1'.format(whole_hit_dice)
+                hit_points = d_roll(os.urandom(16), t = 6, c = whole_hit_dice, m = 0)
+            else:
+                hit_dice = char_level // 2
+                hit_points = d_roll(os.urandom(16), t = 6, c = hit_dice, m = 1)
+            hit_points += 6
+    if ability_scores[4][1] > 13:
+        hit_points += whole_hit_dice
+    #Calculate Saves
+    if char_type == 'Fighter':
+        if char_level == 0:
+            save_scores = [14, 15, 16, 17, 18]
+        elif char_level < 4:
+            save_scores = [12, 13, 14, 15, 16]
+        elif char_level < 7:
+            save_scores = [10, 11, 12, 13, 14]
+        elif char_level < 10:
+            save_scores = [8, 9, 10, 11, 12]
+        elif char_level < 13:
+            save_scores = [6, 7, 8, 9, 10]
+        elif char_level < 19:
+            save_scores = [4, 5, 6, 7, 8]
+        else:
+            save_scores= [2, 3, 4, 5, 6]
+    elif char_type == 'Cleric':
+        if char_level == 0:
+                save_scores = [13, 14, 16, 18, 17]
+        elif char_level < 5:
+            save_scores = [11, 12, 14, 16, 15]
+        elif char_level < 9:
+            save_scores = [9, 10, 12, 14, 13]
+        elif char_level < 13:
+            save_scores = [7, 8, 10, 12, 11]
+        elif char_level < 17:
+            save_scores = [5, 6, 8, 10, 9]
+        else:
+            save_scores= [3, 4, 6, 8, 7]
+    elif char_type == 'Magic User':
+        if char_level == 0:
+            save_scores = [15, 16, 15, 18, 13]
+        elif char_level < 6:
+            save_scores = [13, 14, 13, 16, 11]
+        elif char_level < 11:
+            save_scores = [11, 12, 11, 14, 9]
+        elif char_level < 16:
+            save_scores = [9, 10, 9, 12, 7]
+        else:
+            save_scores = [7, 8, 7, 10, 5]
+    for i in range(len(saves)):
+        char_saves.append((saves[i], save_scores[i]))
+    return system_shock, hit_dice, hit_points, char_saves
 
 def attributes_and_magical_capabilities(char_type, ability_scores):
     """
@@ -161,6 +283,3 @@ def name_generator():
 #    starting_gold()
 #    ask for custom name or random name
 #    name_generator()
-
-
-
