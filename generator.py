@@ -226,7 +226,7 @@ def starting_gold():
     roll = d_roll(os.urandom(16), t = 6, c = 3, m = 0)
     return roll * 10
 
-def name_generator():
+def name_generator(Title = False, Mult_Barr = False):
     """
     This function creates a randomly generated name based on the parameters
     layed out in the revived rulebook
@@ -255,6 +255,39 @@ def name_generator():
                     name += consonants[consonant_roll - 1]
             except IndexError:
                 name += consonants[consonant_roll - 1]
+    if Mult_Barr:
+        barr_roll = d_roll(os.urandom(16), t = 3, c = 1, m = 0)
+        if barr_roll != 1:
+            for i in range(barr_roll - 1):
+                name += '-'
+                name_length = d_roll(os.urandom(16), t = 6, c = 2, m = 0)
+                for i in range(name_length):
+                    vowel_roll = d_roll(os.urandom(16), t = 6, c = 1, m = 0)
+                    consonant_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
+                    if (vowel_roll + consonant_roll) % 2 == 0:
+                        try:
+                            if name[-2] in vowels and name[-1] in vowels:
+                                name += consonants[consonant_roll - 1]
+                            else:
+                                name += vowels[vowel_roll - 1]
+                        except IndexError:
+                            name += vowels[vowel_roll - 1]
+                    else:
+                        try:
+                            if name[-3] in consonants and name[-2] in consonants and name[-1] in consonants:
+                                name += vowels[vowel_roll - 1]
+                            else:
+                                name += consonants[consonant_roll - 1]
+                        except IndexError:
+                            name += consonants[consonant_roll - 1]
+    if Title:
+        titles = [' the Jocund', ' the Pure', ' the Wise', ' the White',
+                    ' the Gray', ' the Black', ' the Steadfast', ' the Nimble',
+                    ' the Brave', ' the Lion', ' the Fox', ' the Bear',
+                    ' the Swift', ' the Just', ' the Bold', ' the Boar',
+                    ' the Bat', ' the Wolf', ' the Potent', ' the Auspicious']
+        title_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
+        name += titles[title_roll - 1]
     return name
 
 
