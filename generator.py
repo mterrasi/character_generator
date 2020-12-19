@@ -2,7 +2,7 @@
 #---------------------
 #Name: OD&D Revived Character Generator
 #Version: 1.0
-#Date: 2020-12-17
+#Date: 2020-12-19
 #---------------------
 #max line = 79
 
@@ -210,14 +210,106 @@ def hit_dice_hit_points_and_saves(char_type, char_level, ability_scores):
         char_saves.append((saves[i], save_scores[i]))
     return system_shock, hit_dice, hit_points, char_saves
 
-def attributes_and_magical_capabilities(char_type, ability_scores):
+def attributes(char_type, ability_scores, char_level, older = False,
+                sex_choice, weight_choice, id_quality = False):
     """
     This function generages the character's:
     profession,
     maximum load,
-    any magical capabilities or holy powers,
     and allignment.
     """
+    if sex_choice == 'Random':
+        sex_roll = d_roll(os.urandom(16), t = 2, c = 1, m = 0)
+    if sex_roll == 0:
+        sex = 'Female'
+    else:
+        sex = 'Male'
+    if not older:
+        age_roll = d_roll(os.urandom(16), t = 6, c = 2, m = 0)
+        age = 11 + char_level + age_roll
+    elif older:
+        age_roll = d_roll(os.urandom(16), t = 6, c = 3, m = 0)
+        age = 21 + char_level + age_roll
+    height_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
+    if height_roll == 1:
+        height = 'Very Short'
+    elif height_roll < 6:
+        height = 'Short'
+    elif height_roll < 16:
+        height = 'Average'
+    elif height_roll < 20:
+        height = 'Tall'
+    else:
+        height = 'Very Tall'
+    #Weight = (str + con)
+    weight = ability_scores[0][1] + ability_scores[4][1]
+    if sex == 'Male':
+        if weight_choice == 'Light':
+            weight *= 7
+        elif weight_choice == 'Average':
+            weight *= 8
+        else:
+            weight *= 9
+    else:
+        if weight_choice == 'Light':
+            weight *= 6
+        elif weight_choice == 'Average':
+            weight *= 7
+        else:
+            weight *= 8
+    eye_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
+    eye_color = hair_color_table[eye_roll]
+    hair_color_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
+    hair_color = hair_color_table[hair_color_roll]
+    hair_type_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
+    hair_type = hair_type_table[hair_type]
+    hair_length_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
+    hair_length = hair_length_table[hair_length_roll]
+    skin_color_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
+    skin_color = skin_color_table[skin_color_roll]
+    handedness_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
+    if handedness_roll < 3:
+        handedness = 'Left Handed'
+    elif handedness_roll < 20:
+        handedness = 'Right Handed'
+    else:
+        handedness = 'Ambidextrous'
+    dental_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
+    dental_status = dental_table[dental_roll]
+    procession_category_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
+    profession_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0) 
+    profession = profession_table[procession_category_roll][profession_roll]
+    maximum_load = '{} cn'.format(ability_scores[0][1] * 150)
+    alignment_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
+    if alignment_roll < 5:
+        alighnemt = 'Chaotic'
+    elif alignment_roll < 17:
+        alighnemt = 'Neutral'
+    else:
+        alighnemt = 'Lawful'
+    if id_quality:
+        id_quality_roll = d_roll(os.urandom(16), t = 6, c = 1, m = 0)
+        id_quality = id_quality_table[id_quality_roll]
+    return sex, age, height, weight, eye_color, hair_color, hair_type,
+            hair_length, skin_color, handedness, dental_status, profession,
+            maximum_load, id_quality
+
+def magical_capabilities(char_type, name_deity = False):
+    """
+    This function generates the character's magical capabilities or holy powers.
+    """
+    if char_type == 'Cleric':
+        if name_deity == True:
+            deity_name = name_generator(Title = False, Mult_Barr = False)
+        domain_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
+        edict_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
+        anathema_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
+        turning_events = 
+        spells = 
+        spell_slots = 
+    elif char_type == 'Magic User':
+        starting_spell_roll = d_roll(os.urandom(16), t = 8, c = 1, m = 0)
+        spell_slots = 
 
 def starting_gold():
     """
