@@ -210,8 +210,21 @@ def hit_dice_hit_points_and_saves(char_type, char_level, ability_scores):
         char_saves.append((saves[i], save_scores[i]))
     return system_shock, hit_dice, hit_points, char_saves
 
-def attributes(char_type, ability_scores, char_level, older = False,
-                sex_choice, weight_choice, id_quality = False):
+def attribute_table_generator(filename):
+    """
+    This function reads a txt file and creates a list object containing the
+    table used to pick attributes.
+    Returns: a list
+    """
+    table_doc = open(filename, 'r')
+    table = []
+    for line in table_doc:
+        table.append(line.strip())
+    table_doc.close()
+    return table
+
+def attributes(char_type, ability_scores, char_level, sex_choice,
+                 weight_choice, older = False, id_quality = False):
     """
     This function generages the character's:
     profession,
@@ -257,16 +270,27 @@ def attributes(char_type, ability_scores, char_level, older = False,
             weight *= 7
         else:
             weight *= 8
-    eye_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
-    eye_color = hair_color_table[eye_roll]
-    hair_color_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
-    hair_color = hair_color_table[hair_color_roll]
-    hair_type_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
-    hair_type = hair_type_table[hair_type]
-    hair_length_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
-    hair_length = hair_length_table[hair_length_roll]
-    skin_color_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
-    skin_color = skin_color_table[skin_color_roll]
+    #eye color
+    eye_color_table = attribute_table_generator('eye_color_table.txt')
+    eye_roll = d_roll(os.urandom(16), t = len(eye_color_table), c = 1, m = 0)
+    eye_color = eye_color_table[eye_roll - 1]
+    #hair color
+    hair_color_table = attribute_table_generator('hair_color_table.txt')
+    hair_color_roll = d_roll(os.urandom(16), t = len(hair_color_table), c = 1, m = 0)
+    hair_color = hair_color_table[hair_color_roll - 1]
+    #hair type
+    hair_type_table = attribute_table_generator('hair_type_table.txt')
+    hair_type_roll = d_roll(os.urandom(16), t = len(hair_type_table), c = 1, m = 0)
+    hair_type = hair_type_table[hair_type_roll - 1]
+    #hair length
+    hair_length_table = attribute_table_generator('hair_length_table.txt')
+    hair_length_roll = d_roll(os.urandom(16), t = len(hair_length_table), c = 1, m = 0)
+    hair_length = hair_length_table[hair_length_roll - 1]
+    #skin color
+    skin_color_table = attribute_table_generator('skin_color_table.txt')
+    skin_color_roll = d_roll(os.urandom(16), t = len(skin_color_table), c = 1, m = 0)
+    skin_color = skin_color_table[skin_color_roll - 1]
+    #handedness
     handedness_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
     if handedness_roll < 3:
         handedness = 'Left Handed'
@@ -274,42 +298,71 @@ def attributes(char_type, ability_scores, char_level, older = False,
         handedness = 'Right Handed'
     else:
         handedness = 'Ambidextrous'
-    dental_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
-    dental_status = dental_table[dental_roll]
-    procession_category_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
-    profession_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0) 
-    profession = profession_table[procession_category_roll][profession_roll]
+    #dental status
+    dental_table = attribute_table_generator('dental_status_table.txt')
+    dental_roll = d_roll(os.urandom(16), t = len(dental_table), c = 1, m = 0)
+    dental_status = dental_table[dental_roll - 1]
+    #profession
+    profession_table = attribute_table_generator('professions_table.txt') 
+    profession_roll = d_roll(os.urandom(16), t = len(profession_table), c = 1, m = 0)
+    profession = profession_table[profession_roll - 1]
+    #maxmium load
     maximum_load = '{} cn'.format(ability_scores[0][1] * 150)
+    #alignmet
     alignment_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
     if alignment_roll < 5:
-        alighnemt = 'Chaotic'
+        alignment = 'Chaotic'
     elif alignment_roll < 17:
-        alighnemt = 'Neutral'
+        alignment = 'Neutral'
     else:
-        alighnemt = 'Lawful'
+        alignment = 'Lawful'
+    #identifying quality
     if id_quality:
-        id_quality_roll = d_roll(os.urandom(16), t = 6, c = 1, m = 0)
-        id_quality = id_quality_table[id_quality_roll]
-    return sex, age, height, weight, eye_color, hair_color, hair_type,
+        id_quality_table = attribute_table_generator('identifying_quality_table.txt')
+        id_quality_roll = d_roll(os.urandom(16), t = len(id_quality_table), c = 1, m = 0)
+        id_quality = id_quality_table[id_quality_roll - 1]
+    return (sex, age, height, weight, eye_color, hair_color, hair_type,
             hair_length, skin_color, handedness, dental_status, profession,
-            maximum_load, id_quality
+            maximum_load, id_quality, alignment)
 
-def magical_capabilities(char_type, name_deity = False):
+def magical_capabilities(char_type, char_level, name_deity = False):
     """
     This function generates the character's magical capabilities or holy powers.
     """
     if char_type == 'Cleric':
         if name_deity == True:
             deity_name = name_generator(Title = False, Mult_Barr = False)
-        domain_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
-        edict_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
-        anathema_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
-        turning_events = 
-        spells = 
-        spell_slots = 
+        #domain
+        domain_table = attribute_table_generator('domain_table.txt')
+        domain_roll = d_roll(os.urandom(16), t = len(domain_table), c = 1, m = 0)
+        domain = domain_table[domain_roll - 1]
+        #edict
+        edict_table = attribute_table_generator('edict_table.txt')
+        edict_roll = d_roll(os.urandom(16), t = len(edict_table), c = 1, m = 0)
+        edict = edict_table[edict_roll - 1]
+        #anathema
+        anathema_table = attribute_table_generator('anathema_table.txt')
+        anathema_roll = d_roll(os.urandom(16), t = len(anathema_table), c = 1, m = 0)
+        anathema = anathema_table[anathema_roll - 1]
+        #turning events
+        turning_events_table = attribute_table_generator('turning_events.txt')
+        turning_events = turning_events_table[char_level - 1]
+#        spells = 
+        spell_slots_table = attribute_table_generator('cleric_spell_slots_table.txt')
+        spell_slots = spell_slots_table[char_level - 1]
     elif char_type == 'Magic User':
-        starting_spell_roll = d_roll(os.urandom(16), t = 8, c = 1, m = 0)
-        spell_slots = 
+        spell_table = attribute_table_generator('spell_table.txt')
+        starting_spell_roll = d_roll(os.urandom(16), t = len(spell_table), c = 1, m = 0)
+        starting_spell = spell_table[starting_spell_roll - 1]
+        spell_slots_table = attribute_table_generator('magic_user_spell_slots_table.txt')
+        spell_slots = spell_slots_table[char_level - 1]
+    if char_type == 'Cleric':
+        if name_deity:
+            return deity_name, domain, edict, anathema, turning_events, spell_slots
+        else:
+            return domain, edict, anathema, turning_events, spell_slots
+    else:
+        return starting_spell, spell_slots
 
 def starting_gold():
     """
