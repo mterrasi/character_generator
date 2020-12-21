@@ -1,0 +1,8 @@
+Charm Person
+Detect Magic
+Hold Portal
+Light
+Protection from Evil
+Read Languages
+Read Magic
+Sleep
