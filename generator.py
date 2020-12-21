@@ -2,7 +2,7 @@
 #---------------------
 #Name: OD&D Revived Character Generator
 #Version: 1.0
-#Date: 2020-12-19
+#Date: 2020-12-20
 #---------------------
 #max line = 79
 
@@ -88,6 +88,7 @@ def ability_adjustments(prime_ability, ability_scores, char_level):
     based upon the rolled ability scores.
     Assumes prime ability is a string, ability_scores the stats returned from ability_generator, 
     and char_level and int.
+    Returns: a list of all ability adjustments, listed as strings.
     """
     adjustments = []
     abilities = ['Strength', 'Intelligence', 'Wisdom', 'Dexterity', 'Constitution', 'Charisma']
@@ -97,10 +98,10 @@ def ability_adjustments(prime_ability, ability_scores, char_level):
     if ability_scores_with_prime[0][1] >= 14:
         adjustments.append('+1 to Melee and Thrown Weapon Damage')
     if ability_scores_with_prime[1][1] > 10:
-        num_langs = 10 - ability_scores_with_prime[1][1]
+        num_langs = ability_scores_with_prime[1][1] - 10
         adjustments.append('+{} Languages'.format(num_langs))
     if ability_scores_with_prime[2][1] > 10:
-        comp_chance = 10 - ability_scores_with_prime[2][1]
+        comp_chance = (ability_scores_with_prime[2][1] - 10) * 10
         adjustments.append('+{}% Chance Comprehend Spoken Language'. format(comp_chance))
     if ability_scores_with_prime[3][1] > 13:
         adjustments.append('+1 Missle Weapon Damage')
@@ -125,23 +126,26 @@ def hit_dice_hit_points_and_saves(char_type, char_level, ability_scores):
         char_type - str
         char_level - int
         ability_scores - list of tuples
+    Returns: system_shock, hit_dice, hit_points, char_saves, and melee and missile to-hit 
     """
-    #Get list of hit dice, saves, (and possibly to hit) from file.
     saves = ['Death Ray/Poison', 'Wand/Paralysis/Polymorph', 'Petrification/Turn to Stone',
              'Dragon Breath/Area of Effect', 'Spells/Rods/Staves']
     char_saves = []
     #First indexing number is because of addition of experience bonus to ability scores.
-    constitution = ability_scores[0][4][1]
+    constitution = ability_scores[4][1]
     #Calculate System Shock
     system_shock = (20 - (constitution + char_level))
-    #Hit Dice, Hit Points
+    #Hit Dice, Hit Points, To-Hit
+    hit_points = 0
     if char_level == 0:
             if char_type == 'Fighter':
                 hit_dice = '1'
                 hit_points = 6
+                to_hit = '+1, +1'
             else:
                 hit_dice = '1/2'
                 hit_points = 3
+                to_hit = '+1, +1'
     else:
         if char_type == 'Fighter':
             whole_hit_dice = char_level
@@ -150,19 +154,23 @@ def hit_dice_hit_points_and_saves(char_type, char_level, ability_scores):
             if char_level > 1:
                 hit_points = d_roll(os.urandom(16), t = 6, c = (whole_hit_dice - 1), m = (whole_hit_dice - 1))
             hit_points += 7
+            to_hit = '+{}, +{}'.format((whole_hit_dice + 1), (whole_hit_dice + 1))
         elif char_type == 'Cleric':
             whole_hit_dice = char_level
             if char_level > 1:
                 hit_points = d_roll(os.urandom(16), t = 6, c = (hit_dice - 1), m = 0)
             hit_points += 6
+            to_hit = '+{}, +{}'.format(whole_hit_dice, whole_hit_dice)
         elif char_type == 'Magic User':
             if char_level % 2 == 1:
                 whole_hit_dice = (char_level // 2) + 1
                 hit_dice = '{} + 1'.format(whole_hit_dice)
                 hit_points = d_roll(os.urandom(16), t = 6, c = whole_hit_dice, m = 0)
+                to_hit = '+{}, +{}'.format((whole_hit_dice + 1), (whole_hit_dice + 1))
             else:
                 hit_dice = char_level // 2
                 hit_points = d_roll(os.urandom(16), t = 6, c = hit_dice, m = 1)
+                to_hit = '+{}, +{}'.format(whole_hit_dice, whole_hit_dice)
             hit_points += 6
     if ability_scores[4][1] > 13:
         hit_points += whole_hit_dice
@@ -208,7 +216,7 @@ def hit_dice_hit_points_and_saves(char_type, char_level, ability_scores):
             save_scores = [7, 8, 7, 10, 5]
     for i in range(len(saves)):
         char_saves.append((saves[i], save_scores[i]))
-    return system_shock, hit_dice, hit_points, char_saves
+    return system_shock, hit_dice, hit_points, char_saves, to_hit
 
 def attribute_table_generator(filename):
     """
@@ -439,18 +447,25 @@ def name_generator(Title = False, Mult_Barr = False):
 
 
 #ask for generation method 
-#generation_method = 
-#if generation_method == 'Classic':
-#    #ask for character class
-#    char_type = ''
-#    ability_generator()
-#    #set experience boost
-#    ability_adjustments(char_type, ability_scores)
-#    hit_dice_hit_points_and_saves(char_type, ability_scores)
-#    attributes_and_magical_capabilities(char_type, ability_scores)
-#    starting_gold()
+generation_method = 'Classic'
+if generation_method == 'Classic':
+    #ask for character class
+    char_level = 1
+    char_type = 'Fighter'
+    prime_ability = 'Strength'
+    ability_scores, experience_boost = ability_generator(prime_ability)
+    adjustments = ability_adjustments(prime_ability, ability_scores, char_level)
+    #
+    system_shock, hit_dice, hit_points, char_saves, to_hit = hit_dice_hit_points_and_saves(char_type, char_level, ability_scores)
+    sex_choice = 'Random'
+    weight_choice = 'Average'
+    id_quality = False
+    sex, age, height, weight, eye_color, hair_color, hair_type, hair_length, skin_color, handedness, dental_status, profession, maximum_load, id_quality, alignment = attributes(char_type, ability_scores, char_level, sex_choice, weight_choice, older = False, id_quality = False)
+#
+#    magical_capabilities(char_type, char_level, name_deity = False)
+    starting_gold = starting_gold()
 #    ask for custom name or random name
-#    name_generator()
+    name = name_generator(Title = False, Mult_Barr = False)
 #else:
 #    ability_generator()
 #    # show abilities and ask for character class
@@ -461,3 +476,56 @@ def name_generator(Title = False, Mult_Barr = False):
 #    starting_gold()
 #    ask for custom name or random name
 #    name_generator()
+
+#need to show ability with prime shown/accounted for
+print('Name: ', name)
+print('Class: ', char_type)
+print('Level: ', char_level)
+print('----------------------------------------')
+print('Hit Dice: ', hit_dice)
+print('Hit Points: ', hit_points)
+print('To-Hit: ', to_hit)
+print('----------------------------------------')
+print('Ability Scores:')
+print(ability_scores[0][0], ':', ability_scores[0][1])
+print(ability_scores[1][0], ':', ability_scores[1][1])
+print(ability_scores[2][0], ':', ability_scores[2][1])
+print(ability_scores[3][0], ':', ability_scores[3][1])
+print(ability_scores[4][0], ':', ability_scores[4][1])
+print(ability_scores[5][0], ':', ability_scores[5][1])
+print('----------------------------------------')
+if len(adjustments) != 0:
+    print('Adjustments:')
+    for adjustment in adjustments:
+        print(adjustment)
+else:
+    print('No Ability Adjustments')
+print('----------------------------------------')
+print('Experience Boost:', experience_boost)
+print('----------------------------------------')
+print('Saves:')
+print('System Shock: ', system_shock)
+print(char_saves[0][0], ':', char_saves[0][1])
+print(char_saves[1][0], ':', char_saves[1][1])
+print(char_saves[2][0], ':', char_saves[2][1])
+print(char_saves[3][0], ':', char_saves[3][1])
+print(char_saves[4][0], ':', char_saves[4][1])
+print('----------------------------------------')
+print('Attributes:')
+print('Sex: ', sex)
+print('Age: ', age)
+print('Height', height)
+print('Weight: ', weight)
+print('Eye Color: ', eye_color)
+print('Hair Color: ', hair_color)
+print('Hair Type: ', hair_type)
+print('Hair Length: ', hair_length)
+print('Skin Color: ', skin_color)
+print('Handedness: ', handedness)
+print('Dental Status: ', dental_status)
+print('Profession: ', profession)
+# profession definition print()
+print('Maximum Load: ', maximum_load)
+if id_quality:
+    print('Identifying Quality: ', id_quality)
+print('Alignment: ', alignment)
