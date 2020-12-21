@@ -241,10 +241,10 @@ def attributes(char_type, ability_scores, char_level, sex_choice,
     """
     if sex_choice == 'Random':
         sex_roll = d_roll(os.urandom(16), t = 2, c = 1, m = 0)
-    if sex_roll == 0:
-        sex = 'Female'
-    else:
-        sex = 'Male'
+        if sex_roll == 1:
+            sex = 'Female'
+        else:
+            sex = 'Male'
     if not older:
         age_roll = d_roll(os.urandom(16), t = 6, c = 2, m = 0)
         age = 11 + char_level + age_roll
