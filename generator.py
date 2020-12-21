@@ -529,3 +529,5 @@ print('Maximum Load: ', maximum_load)
 if id_quality:
     print('Identifying Quality: ', id_quality)
 print('Alignment: ', alignment)
+print('----------------------------------------')
+print('Starting Gold: ', starting_gold)
