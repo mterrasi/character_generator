@@ -98,303 +98,303 @@ Cottager (Unskilled Labor)
 Cottager (Unskilled Labor)
 Cottager (Unskilled Labor)
 Cra Guildsman
-01 : Crier
-02-03 : Dairyman
+Crier
 Dairyman
-04 : Dancer
-05 : Diplomat
-06 : Disher
-07-10 : Ditcher
+Dairyman
+Dancer
+Diplomat
+Disher
 Ditcher
 Ditcher
 Ditcher
-11 : Dog Breaker
-12 : Dog Leech (Veterinary)
-13 : Dowser
-14 : Draper
-15 : Driver
-16-17 : Drover
+Ditcher
+Dog Breaker
+Dog Leech (Veterinary)
+Dowser
+Draper
+Driver
 Drover
-18 : Duffer
-19 : Dyer
-20 : Ellerman
-01 : Engraver
-02 : Estafette
-03 : Ewerer
-04 : Executioner
-05 : Factor
-06 : Falconer
-07-10 : Farmer
+Drover
+Duffer
+Dyer
+Ellerman
+Engraver
+Estafette
+Ewerer
+Executioner
+Factor
+Falconer
+ Farmer
 Farmer
 Farmer
 Farmer
-11 : Farrier
-12 : Fellmonger
-13 : Ferryman
-14-15 : Fisherman
+Farrier
+Fellmonger
+Ferryman
 Fisherman
-16-17 : Fletcher
+Fisherman
 Fletcher
-18 : Forester
-19 : Fower
-20 : Fowler
-01 : Fripperer
-02 : Frontiersman
-03 : Fulker
-04 : Furbisher
-05 : Furner
-06-07 : Furnituremaker
+Fletcher
+Forester
+Fower
+Fowler
+Fripperer
+Frontiersman
+Fulker
+Furbisher
+Furner
 Furnituremaker
-08-10 : Furrier
+Furnituremaker
 Furrier
 Furrier
-11 : Gamester
-12 : Gardener
-13 : Gentleman
-14 : Geometer
-15 : Glasswright
-16 : Glazier
-17 : Goldsmith
-18-20 : Gong Farmer / Nightman
+Furrier
+Gamester
+Gardener
+Gentleman
+Geometer
+Glasswright
+Glazier
+Goldsmith
 Gong Farmer / Nightman
 Gong Farmer / Nightman
-01-02 : Goose Herd
+Gong Farmer / Nightman
 Goose Herd
-03 : Government Worker (Local)
-04 : Gravedigger
-05 : Graveyard Keeper
-06 : Groom
-07-08 : Guardsman
+Goose Herd
+Government Worker (Local)
+Gravedigger
+Graveyard Keeper
+Groom
 Guardsman
-09 : Guide
-10 : Guild Worker
-11 : Gypsy
-12 : Haberdasher
-13-14 : Hacker (Agriculture)
+Guardsman
+Guide
+Guild Worker
+Gypsy
+Haberdasher
 Hacker (Agriculture)
-15-16 : Harlot / Gigolo
+Hacker (Agriculture)
 Harlot / Gigolo
-17 : Hatcheler
-18 : Hatter
-19-20 : Hawker
+Harlot / Gigolo
+Hatcheler
+Hatter
 Hawker
-01 : Hayward / Hedge Warden
-02 : Healer / Curer
-03 : Herbalist
-04-07 : Herdsman
+Hawker
+Hayward / Hedge Warden
+Healer / Curer
+Herbalist
 Herdsman
 Herdsman
 Herdsman
-08 : Hewer
-09 : Hiller
-10-12 : Hind
+Herdsman
+Hewer
+Hiller
 Hind
 Hind
-13 : Hoggard
-14 : Horse Leech (Veterinary)
-15 : Hostler
-16 : Hunter
-17 : Hurdler
-18 : Impresario
-19 : Innkeeper
-20 : Jailer
-01 : Janitor
-02 : Jester / Fool
-03 : Jeweler
-04 : Jiggerman
-05 : Jobmaster
-06 : Joiner
-07 : Juggler / Acrobat
-08 : Kennel Keeper
-09 : Knocker Upper
-10-13 : Laborer (Unskilled Labor)
+Hind
+Hoggard
+Horse Leech (Veterinary)
+Hostler
+Hunter
+Hurdler
+Impresario
+Innkeeper
+Jailer
+Janitor
+Jester / Fool
+Jeweler
+Jiggerman
+Jobmaster
+Joiner
+Juggler / Acrobat
+Kennel Keeper
+Knocker Upper
 Laborer (Unskilled Labor)
 Laborer (Unskilled Labor)
 Laborer (Unskilled Labor)
-14 : Lapidary
-15-17 : Leatherworker
+Laborer (Unskilled Labor)
+Lapidary
 Leatherworker
 Leatherworker
-18 : Lighthouse Keeper
-19 : Litster
-20 : Locksmith
-01 : Logger
-02 : Lorimer
-03-04 : Lumberyard Worker
+Leatherworker
+Lighthouse Keeper
+Litster
+Locksmith
+Logger
+Lorimer
 Lumberyard Worker
-05 : Madame / Pimp (Procurer)
-06 : Manciple
-07 : Mason
-08-09 : Mender
+Lumberyard Worker
+Madame / Pimp (Procurer)
+Manciple
+Mason
 Mender
-10 : Mercer
-11-12 : Merchant
+Mender
+Mercer
 Merchant
-13 : Merchant Guildsman
-14 : Messenger / Herald
-15-17 : Midwife
+Merchant
+Merchant Guildsman
+Messenger / Herald
 Midwife
 Midwife
-18 : Miller
-19 : Millwright
-20 : Miner
-01 : Minstrel
-02-04 : Mole Catcher
+Midwife
+Miller
+Millwright
+Miner
+Minstrel
 Mole Catcher
 Mole Catcher
-05 : Monastery / Convent Aide
-06 : Moneylender
-07 : Mudlark
-08 : Mummer / Mime
-09 : Mystic / Soothsayer
-10-11 : Needleman
+Mole Catcher
+Monastery / Convent Aide
+Moneylender
+Mudlark
+Mummer / Mime
+Mystic / Soothsayer
 Needleman
-12 : Netter
-13 : Nobleman
-14-16 : Nurse / Sitter (Foster)
+Needleman
+Netter
+Nobleman
 Nurse / Sitter (Foster)
 Nurse / Sitter (Foster)
-17 : Orator / Rhetor
-18 : Overman
-19 : Packer
-20 : Painter
-01 : Patternmaker
-02-04 : Pauper
+Nurse / Sitter (Foster)
+Orator / Rhetor
+Overman
+Packer
+Painter
+Patternmaker
 Pauper
 Pauper
-05-07 : peasant
-peasant
-peasant
-08 : Peregrinator
-09 : Perfumer
-10 : Peruker
-11 : Phrenologist
-12 : Picker
-13 : Pigman
-14 : Playwright / Player
-15 : Ponderator
-16 : Porter
-17-18 : Potter
+Pauper
+Peasant
+Peasant
+Peasant
+Peregrinator
+Perfumer
+Peruker
+Phrenologist
+Picker
+Pigman
+Playwright / Player
+Ponderator
+Porter
 Potter
-19 : Puddler
-20 : Puppeteer
-01 : Purveyor
-02 : Quarrier
-03 : Quister
-04-06 : Rat Catcher
+Potter
+Puddler
+Puppeteer
+Purveyor
+Quarrier
+Quister
 Rat Catcher
 Rat Catcher
-07 : Reeve
-08 : Rigger
-09-10 : Roper
+Rat Catcher
+Reeve
+Rigger
 Roper
-11 : Rubbler
-12 : Saddler
-13 : Sailor, Boat
-14 : Sailor, Ship
-15 : Salter
-16 : Sapper
-17-19 : Sawyer
+Roper
+Rubbler
+Saddler
+Sailor, Boat
+Sailor, Ship
+Salter
+Sapper
 Sawyer
 Sawyer
-20 : Scappler
-01 : Scourer
-02 : Scribe
-03 : Sculptor
-04-05 : Seedsman
+Sawyer
+Scappler
+Scourer
+Scribe
+Sculptor
 Seedsman
-06-08 : Serf
+Seedsman
 Serf
 Serf
-09 : Servant (Hired)
-10-11 : Servant (Indentured)
+Serf
+Servant (Hired)
 Servant (Indentured)
-12 : Shearer
-13 : Sheargrinder
-14-15 : Shepherd
+Servant (Indentured)
+Shearer
+Sheargrinder
 Shepherd
-16 : Shingler
-17 : Shipwright
-18 : Singer
-19 : Slave
-20 : Smuggler
-01 : Soaper
-02 : Soldier
-03 : Spicer
-04-06 : Spinner
+Shepherd
+Shingler
+Shipwright
+Singer
+Slave
+Smuggler
+Soaper
+Soldier
+Spicer
 Spinner
 Spinner
-07 : Squire
-08-09 : Stablehand
+Spinner
+Squire
 Stablehand
-10 : Stable Keeper
-11 : Stationer
-12 : Stoneworker
-13 : Storyteller
-14 : Swain
-15-16 : Sweeper
+Stablehand
+Stable Keeper
+Stationer
+Stoneworker
+Storyteller
+Swain
 Sweeper
-17 : Tailor
-18-19 : Tanner
+Sweeper
+Tailor
 Tanner
-20 : Taper Weaver
-01 : Tapley
-02 : Tapster
-03 : Tavern Keeper
-04 : Tax Assessor
-05 : Tax Collector
-06 : Textor
-07-08 : Thatcher
+Tanner
+Taper Weaver
+Tapley
+Tapster
+Tavern Keeper
+Tax Assessor
+Tax Collector
+Textor
 Thatcher
-09-11 : Thresher
+Thatcher
 Thresher
 Thresher
-12 : Tiler
-13 : Tinker
-14 : Tinsmith
-15 : Tranqueter
-16 : Tranter
-17-19 : Trapper
+Thresher
+Tiler
+Tinker
+Tinsmith
+Tranqueter
+Tranter
 Trapper
 Trapper
-20 : Trencherman
-01 : Truchman
-02 : Tucker
-03 : Tumbler
-04-06 : Turnspit
+Trapper
+Trencherman
+Truchman
+Tucker
+Tumbler
 Turnspit
 Turnspit
-07 : Undertaker
-08 : Upholder
-09 : Vagrant
-10 : Vassal
-11 : Vintner
-12-13 : Wakeman
+Turnspit
+Undertaker
+Upholder
+Vagrant
+Vassal
+Vintner
 Wakeman
-14 : Waller
-15 : Warrener
-16-18 : Water Carrier
+Wakeman
+Waller
+Warrener
 Water Carrier
 Water Carrier
-19 : Waymaker
-20 : Wayman
-01 : Welldigger
-02 : Wellmaster
-03 : Wellwright
-04 : Wharfman
-05 : Wheelwright
-06 : Whitear
-07 : Winder
-08 : Wire Drawer
-09 : Woolcomber
-10 : Woolman
-11-13 : Wyrth
+Water Carrier
+Waymaker
+Wayman
+Welldigger
+Wellmaster
+Wellwright
+Wharfman
+Wheelwright
+Whitear
+Winder
+Wire Drawer
+Woolcomber
+Woolman
 Wyrth
 Wyrth
-14 : Xylographer
-15-18 : Yardman
+Wyrth
+Xylographer
 Yardman
 Yardman
 Yardman
-19 : Yearman
-20 : Zoographer
+Yardman
+Yearman
+Zoographer

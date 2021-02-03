@@ -62,7 +62,7 @@ def d_roll(s, t = 6, c = 1, m = 0, l = False, h = False):
 def name_generator(Title = False, Mult_Barr = False):
     """
     This function creates a randomly generated name based on the parameters
-    layed out in the revived rulebook
+    laid out in the revived rulebook
     """
     name = ''
     vowels = 'aeiouy'
