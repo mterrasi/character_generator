@@ -2,7 +2,7 @@
 #---------------------
 #Name: OD&D Revived Character Generator
 #Version: 1.0
-#Date: 2021-01-20
+#Date: 2021-02-03
 #---------------------
 #max line = 79
 
@@ -59,20 +59,27 @@ def d_roll(s, t = 6, c = 1, m = 0, l = False, h = False):
     
     return(roll + m)
 
-def ability_generator(prime_ability):
+def ability_generator():
     """
-    This function generates the characters abilities using either
-    the classic method or the revived method.
-    Determines any experience boost, if applicable.
-    Assumes prime_ability is a string.
+    This function generates the characters abilities.
     Returns the abilities as a list of tuples (ability as str, stat as int),
-    and any applicable experience boost.
     """
     abilities = ['Strength', 'Intelligence', 'Wisdom', 'Dexterity', 'Constitution', 'Charisma']
     stats = []
     for i in range(len(abilities)):
         result = d_roll(os.urandom(16), t = 6, c = 3, m = 0)
         stats.append((abilities[i], result))
+    return stats
+
+def experience_boost_determination(ability_scores, prime_ability):
+    """
+    This function determines any applicable experience boost.
+    Assumes abilities is a list of tuples (ability as str, stat as int)
+    Assumes prime_ability is a string.
+    Returns a percentage as a str.
+    """
+    abilities = ['Strength', 'Intelligence', 'Wisdom', 'Dexterity', 'Constitution', 'Charisma']
+    stats = ability_scores
     prime = abilities.index(prime_ability) 
     if stats[prime][1] == 13 or stats[prime][1] == 14:
         experience_boost = '5%'
@@ -80,7 +87,7 @@ def ability_generator(prime_ability):
         experience_boost = '10%'
     else:
         experience_boost = '0%'
-    return stats, experience_boost
+    return experience_boost
 
 def ability_adjustments(prime_ability, ability_scores, char_level):
     """
@@ -92,9 +99,8 @@ def ability_adjustments(prime_ability, ability_scores, char_level):
     """
     adjustments = []
     abilities = ['Strength', 'Intelligence', 'Wisdom', 'Dexterity', 'Constitution', 'Charisma']
-    #prime adjustment not working
     prime = abilities.index(prime_ability) 
-    ability_scores_with_prime = ability_scores
+    ability_scores_with_prime = ability_scores[:]
     ability_scores_with_prime[prime] = (prime_ability, (ability_scores[prime][1] + char_level))
     if ability_scores_with_prime[0][1] >= 14:
         adjustments.append('+1 to Melee and Thrown Weapon Damage')
@@ -103,7 +109,7 @@ def ability_adjustments(prime_ability, ability_scores, char_level):
         adjustments.append('+{} Languages'.format(num_langs))
     if ability_scores_with_prime[2][1] > 10:
         comp_chance = (ability_scores_with_prime[2][1] - 10) * 10
-        adjustments.append('+{}% Chance Comprehend Spoken Language'. format(comp_chance))
+        adjustments.append('+{}% Chance Comprehend Spoken Language'.format(comp_chance))
     if ability_scores_with_prime[3][1] > 13:
         adjustments.append('+1 Missle Weapon Damage')
     if ability_scores_with_prime[4][1] > 13:
@@ -139,48 +145,53 @@ def hit_dice_hit_points_and_saves(char_type, char_level, ability_scores):
     #Hit Dice, Hit Points, To-Hit
     hit_points = 0
     if char_level == 0:
-            if char_type == 'Fighter':
-                hit_dice = '1'
+            if char_type == 'fighter':
+                whole_hit_dice = 1
+                hit_dice = whole_hit_dice
                 hit_points = 6
                 to_hit = '+1, +1'
             else:
+                whole_hit_dice = 1
                 hit_dice = '1/2'
                 hit_points = 3
                 to_hit = '+1, +1'
     else:
-        if char_type == 'Fighter':
+        if char_type == 'fighter':
             whole_hit_dice = char_level
             hit_dice_modifier = char_level
-            hit_dice = '{} + {}'.format(whole_hit_dice, hit_dice_modifier)
+            hit_dice = '{}+{}'.format(whole_hit_dice, hit_dice_modifier)
             if char_level > 1:
                 hit_points = d_roll(os.urandom(16), t = 6, c = (whole_hit_dice - 1), m = (whole_hit_dice - 1))
             hit_points += 7
-            to_hit = '+ {}, + {}'.format((whole_hit_dice + 1), (whole_hit_dice + 1))
-        elif char_type == 'Cleric':
-            hit_dice = char_level
+            to_hit = '+{}, +{}'.format((whole_hit_dice + 1), (whole_hit_dice + 1))
+        elif char_type == 'cleric':
+            whole_hit_dice = char_level
+            hit_dice = whole_hit_dice
             if char_level > 1:
                 hit_points = d_roll(os.urandom(16), t = 6, c = (hit_dice - 1), m = 0)
             hit_points += 6
-            to_hit = '+ {}, + {}'.format(hit_dice, hit_dice)
-        elif char_type == 'Magic User':
+            to_hit = '+{}, +{}'.format(hit_dice, hit_dice)
+        elif char_type == 'magic user':
             if char_level > 1:
                 if char_level % 2 == 0:
                     whole_hit_dice = char_level // 2
-                    hit_dice = '{} + 1'.format(whole_hit_dice)
+                    hit_dice = '{}+1'.format(whole_hit_dice)
                     hit_points = d_roll(os.urandom(16), t = 6, c = whole_hit_dice, m = 0)
-                    to_hit = '+ {}, + {}'.format((whole_hit_dice + 1), (whole_hit_dice + 1))
+                    to_hit = '+{}, +{}'.format((whole_hit_dice + 1), (whole_hit_dice + 1))
                 else:
-                    hit_dice = (char_level // 2) + 1
+                    whole_hit_dice = (char_level // 2) + 1
+                    hit_dice = whole_hit_dice
                     hit_points = d_roll(os.urandom(16), t = 6, c = hit_dice, m = 1)
-                    to_hit = '+ {}, + {}'.format(hit_dice, hit_dice)
+                    to_hit = '+{}, +{}'.format(hit_dice, hit_dice)
             else:
-                hit_dice = char_level
-                to_hit = '+ {}, + {}'.format(hit_dice, hit_dice)
+                whole_hit_dice = char_level
+                hit_dice = whole_hit_dice
+                to_hit = '+{}, +{}'.format(hit_dice, hit_dice)
             hit_points += 6
     if ability_scores[4][1] > 13:
         hit_points += whole_hit_dice
     #Calculate Saves
-    if char_type == 'Fighter':
+    if char_type == 'fighter':
         if char_level == 0:
             save_scores = [14, 15, 16, 17, 18]
         elif char_level < 4:
@@ -195,9 +206,9 @@ def hit_dice_hit_points_and_saves(char_type, char_level, ability_scores):
             save_scores = [4, 5, 6, 7, 8]
         else:
             save_scores= [2, 3, 4, 5, 6]
-    elif char_type == 'Cleric':
+    elif char_type == 'cleric':
         if char_level == 0:
-                save_scores = [13, 14, 16, 18, 17]
+            save_scores = [13, 14, 16, 18, 17]
         elif char_level < 5:
             save_scores = [11, 12, 14, 16, 15]
         elif char_level < 9:
@@ -208,7 +219,7 @@ def hit_dice_hit_points_and_saves(char_type, char_level, ability_scores):
             save_scores = [5, 6, 8, 10, 9]
         else:
             save_scores= [3, 4, 6, 8, 7]
-    elif char_type == 'Magic User':
+    elif char_type == 'magic user':
         if char_level == 0:
             save_scores = [15, 16, 15, 18, 13]
         elif char_level < 6:
@@ -239,17 +250,21 @@ def attribute_table_generator(filename):
 def attributes(char_type, ability_scores, char_level, sex_choice,
                  weight_choice, older = False, id_quality = False):
     """
-    This function generages the character's:
+    This function generates the character's:
     profession,
     maximum load,
-    and allignment.
+    and algnment.
     """
-    if sex_choice == 'Random':
+    if sex_choice == 'random':
         sex_roll = d_roll(os.urandom(16), t = 2, c = 1, m = 0)
         if sex_roll == 1:
-            sex = 'Female'
+            sex = 'female'
         else:
-            sex = 'Male'
+            sex = 'male'
+    elif sex_choice == 'male':
+        sex = 'male'
+    elif sex_choice == 'female':
+        sex = 'female'
     if not older:
         age_roll = d_roll(os.urandom(16), t = 6, c = 2, m = 0)
         age = 11 + char_level + age_roll
@@ -257,29 +272,41 @@ def attributes(char_type, ability_scores, char_level, sex_choice,
         age_roll = d_roll(os.urandom(16), t = 6, c = 3, m = 0)
         age = 21 + char_level + age_roll
     height_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
-    if height_roll == 1:
-        height = 'Very Short'
-    elif height_roll < 6:
-        height = 'Short'
-    elif height_roll < 16:
-        height = 'Average'
-    elif height_roll < 20:
-        height = 'Tall'
-    else:
-        height = 'Very Tall'
+    if sex == 'male':
+        if height_roll == 1:
+            height = 'Very Short (4ft 8in - 4ft 11in)'
+        elif height_roll < 6:
+            height = 'Short (5ft - 5ft 3in)'
+        elif height_roll < 16:
+            height = 'Average (5ft 4in - 5ft 8in)'
+        elif height_roll < 20:
+            height = 'Tall (5ft 9in - 6ft)'
+        else:
+            height = 'Very Tall (6ft 1in - 6ft 4in)'
+    elif sex == 'female':
+        if height_roll == 1:
+            height = 'Very Short (4ft 6in - 4ft 9in)'
+        elif height_roll < 6:
+            height = 'Short (4ft 10in - 5ft 1in)'
+        elif height_roll < 16:
+            height = 'Average (5ft 2in - 5ft 6in)'
+        elif height_roll < 20:
+            height = 'Tall (5ft 7in - 5ft 10in)'
+        else:
+            height = 'Very Tall (5ft 11in - 6ft 2in)'
     #Weight = (str + con)
     weight = ability_scores[0][1] + ability_scores[4][1]
-    if sex == 'Male':
-        if weight_choice == 'Light':
+    if sex == 'male':
+        if weight_choice == 'light':
             weight *= 7
-        elif weight_choice == 'Average':
+        elif weight_choice == 'average':
             weight *= 8
         else:
             weight *= 9
     else:
-        if weight_choice == 'Light':
+        if weight_choice == 'light':
             weight *= 6
-        elif weight_choice == 'Average':
+        elif weight_choice == 'average':
             weight *= 7
         else:
             weight *= 8
@@ -319,9 +346,9 @@ def attributes(char_type, ability_scores, char_level, sex_choice,
     profession_table = attribute_table_generator('professions_table.txt') 
     profession_roll = d_roll(os.urandom(16), t = len(profession_table), c = 1, m = 0)
     profession = profession_table[profession_roll - 1]
-    #maxmium load
+    #maximum load
     maximum_load = '{} cn'.format(ability_scores[0][1] * 150)
-    #alignmet
+    #alignment
     alignment_roll = d_roll(os.urandom(16), t = 20, c = 1, m = 0)
     if alignment_roll < 5:
         alignment = 'Chaotic'
@@ -330,7 +357,18 @@ def attributes(char_type, ability_scores, char_level, sex_choice,
     else:
         alignment = 'Lawful'
     #identifying quality
-    if id_quality:
+    if id_quality and ability_scores[5][1] < 7:
+        id_quality_table = attribute_table_generator('identifying_quality_table.txt')
+        id_quality_roll_1 = d_roll(os.urandom(16), t = len(id_quality_table), c = 1, m = 0)
+        id_quality_1 = id_quality_table[id_quality_roll_1 - 1]
+        id_quality_roll_2 = d_roll(os.urandom(16), t = len(id_quality_table), c = 1, m = 0)       
+        id_quality_2 = id_quality_table[id_quality_roll_2 - 1] 
+        id_quality = '{}, and {}'.format(id_quality_1, id_quality_2)
+    elif ability_scores[5][1] < 7:
+        id_quality_table = attribute_table_generator('identifying_quality_table.txt')
+        id_quality_roll = d_roll(os.urandom(16), t = len(id_quality_table), c = 1, m = 0)
+        id_quality = id_quality_table[id_quality_roll - 1] 
+    elif id_quality:
         id_quality_table = attribute_table_generator('identifying_quality_table.txt')
         id_quality_roll = d_roll(os.urandom(16), t = len(id_quality_table), c = 1, m = 0)
         id_quality = id_quality_table[id_quality_roll - 1]
@@ -338,11 +376,25 @@ def attributes(char_type, ability_scores, char_level, sex_choice,
             hair_length, skin_color, handedness, dental_status, profession,
             maximum_load, id_quality, alignment)
 
+def profession_definition(filename, profession):
+    """
+    This function reads a txt file and creates a list object containing the
+    table used to pick attributes.
+    Returns: a list
+    """
+    prof_def_doc = open(filename, 'r')
+    prof_dict = {}
+    for line in prof_def_doc:
+        new_line = line.split(':')
+        prof_dict[new_line[0]] = new_line[1].strip()
+    prof_def_doc.close()
+    return prof_dict[profession]
+
 def magical_capabilities(char_type, char_level, name_deity = False):
     """
     This function generates the character's magical capabilities or holy powers.
     """
-    if char_type == 'Cleric':
+    if char_type == 'cleric':
         if name_deity == True:
             deity_name = name_generator(Title = False, Mult_Barr = False)
         else:
@@ -361,24 +413,35 @@ def magical_capabilities(char_type, char_level, name_deity = False):
         anathema = anathema_table[anathema_roll - 1]
         #turning events
         turning_events_table = attribute_table_generator('turning_events.txt')
-        turning_events = turning_events_table[char_level - 1]
-#        spells = 
+        if char_level == 0:
+            turning_events = 'N/A'
+        else:
+            turning_events = turning_events_table[char_level - 1]
         spell_slots_table = attribute_table_generator('cleric_spell_slots_table.txt')
-        spell_slots = spell_slots_table[char_level - 1]
-    elif char_type == 'Magic User':
+        if char_level == 0:
+            spell_slots = 'N/A'
+        else:
+            spell_slots = spell_slots_table[char_level - 1]
+    elif char_type == 'magic user':
         spell_table = attribute_table_generator('spell_table.txt')
-        starting_spell_roll = d_roll(os.urandom(16), t = len(spell_table), c = 1, m = 0)
-        starting_spell = spell_table[starting_spell_roll - 1]
+        if char_level > 0:
+            starting_spell_roll = d_roll(os.urandom(16), t = len(spell_table), c = 1, m = 0)
+            starting_spell = spell_table[starting_spell_roll - 1]
+        else:
+            starting_spell = 'N/A'
         spell_slots_table = attribute_table_generator('magic_user_spell_slots_table.txt')
-        spell_slots = spell_slots_table[char_level - 1]
-    if char_type == 'Cleric':
+        if char_level == 0:
+            spell_slots = 'N/A'
+        else:
+            spell_slots = spell_slots_table[char_level - 1]
+    if char_type == 'cleric':
         return deity_name, domain, edict, anathema, turning_events, spell_slots
     else:
         return starting_spell, spell_slots
 
 def starting_gold():
     """
-    This function generages and returns the character's starting gold as an int.
+    This function generates and returns the character's starting gold as an int.
     """
     roll = d_roll(os.urandom(16), t = 6, c = 3, m = 0)
     return roll * 10
@@ -386,7 +449,7 @@ def starting_gold():
 def name_generator(Title = False, Mult_Barr = False):
     """
     This function creates a randomly generated name based on the parameters
-    layed out in the revived rulebook
+    laid out in the revived rulebook
     returns a string
     """
     name = ''
@@ -447,92 +510,194 @@ def name_generator(Title = False, Mult_Barr = False):
         name += titles[title_roll - 1]
     return name
 
-#ask for generation method 
-while True:
-    generation_method = str(input('Pick a generation method: (Classic or Revived)'))
-    generation_method.lower
-    if generation_method == 'classic':
-        break
-    elif generation_method == 'revived':
-        break
-    else:
-        print('try again...')
+print('----------------------------------------')
+print('----------------------------------------')
+print('Welcome to the Revived character generator!')
+print('----------------------------------------')
 
-if generation_method == 'classic':
-    #ask for character class
-    while True:
-        char_type = str(input('Pick a character class: (Fighter, Cleric, or Magic User)'))
-        char_type.lower
-        if char_type == 'fighter':
+# Generate abilities for character
+ability_scores = ability_generator()
+print('----------------------------------------')
+print('The abilities of your character are:')
+print('----------------------------------------')
+print(ability_scores[0][0], ':', ability_scores[0][1])
+print(ability_scores[1][0], ':', ability_scores[1][1])
+print(ability_scores[2][0], ':', ability_scores[2][1])
+print(ability_scores[3][0], ':', ability_scores[3][1])
+print(ability_scores[4][0], ':', ability_scores[4][1])
+print(ability_scores[5][0], ':', ability_scores[5][1])
+print('----------------------------------------')
+
+#ask for character class
+while True:
+    char_type = str(input('Pick a class for your character: (F)ighter, (C)leric, (M)agic User, or (r)andom '))
+    char_type = char_type.lower()
+    char_type = char_type.rstrip()
+    if char_type == 'fighter' or char_type == 'f':
+        char_type = 'fighter'
+        prime_ability = 'Strength'
+        break
+    elif char_type == 'cleric' or char_type == 'c':
+        char_type = 'cleric'
+        prime_ability = 'Wisdom'
+        break
+    elif char_type == 'magic user' or char_type == 'mu' or char_type == 'm':
+        char_type = 'magic user'
+        prime_ability = 'Intelligence'
+        break
+    elif char_type == 'random' or char_type == 'r':
+        char_type_roll = d_roll(os.urandom(16), t = 3, c = 1, m = 0)
+        if char_type_roll == 1:
+            char_type = 'fighter'
             prime_ability = 'Strength'
             break
-        elif char_type == 'cleric':
-            prime_ability = 'Wisdom'
+        elif char_type_roll == 2:
+            char_type = 'cleric'
+            prime_ability = 'Wisdom' 
             break
-        elif char_type == 'magic user':
+        else:
+            char_type = 'magic user'
             prime_ability = 'Intelligence'
             break
-        else:
-            print('try again...')
-    char_level = int(input('Enter a starting level:'))
-
-    ability_scores, experience_boost = ability_generator(prime_ability)
-    adjustments = ability_adjustments(prime_ability, ability_scores, char_level)
-    #
-    system_shock, hit_dice, hit_points, char_saves, to_hit = hit_dice_hit_points_and_saves(char_type, char_level, ability_scores)
-    while True:
-        sex_choice = str(input('Would you like to select a sex?: (yes or no)'))
-        sex_choice.lower
-        if sex_choice == 'yes' or char_type == 'y':
-            sex = str(input('Please pick a sex: (Male or Female)')
-            sex.lower
-            break
-        elif sex_choice == 'no' or sex_choice == 'n':
-            sex_choice == 'random'
-            break
-        else:
-            print('try again...')
-
-    while True:
-        weight_choice = str(input('Select a weight class?: (light, average, or heavy)'))
-        weight_choice.lower
-        if weight_choice == 'light':
-            break
-        elif weight_choice == 'average':
-            break
-        elif weight_choice == 'heavy':
-            break
-        else:
-            print('try again...')
-
-    id_quality = False
-
-    older = False
-    sex, age, height, weight, eye_color, hair_color, hair_type, hair_length, skin_color, handedness, dental_status, profession, maximum_load, id_quality, alignment = attributes(char_type, ability_scores, char_level, sex_choice, weight_choice, older, id_quality)
-    if char_type == 'cleric':
-        name_deity = True
-        deity_name, domain, edict, anathema, turning_events, spell_slots = magical_capabilities(char_type, char_level, name_deity)
-    elif char_type == 'magic user':
-        starting_spell, spell_slots = magical_capabilities(char_type, char_level)
-    starting_gold = starting_gold()
-#    ask for custom name or random name
-    gen_name = 'yes'
-    if gen_name == 'yes':
-        name = name_generator(Title = False, Mult_Barr = False)
     else:
-        name = 'TBD'
-#else:
-#    ability_generator()
-#    # show abilities and ask for character class
-#    char_type = ''
-#    #set experience boost
-#    hit_dice_hit_points_and_saves(char_type, ability_scores)
-#    attributes_and_magical_capabilities(char_type, ability_scores)
-#    starting_gold()
-#    ask for custom name or random name
-#    name_generator()
+        print('please try again...')
+while True:
+    try:
+        char_level = int(input('Enter a starting level: '))
+        break
+    except ValueError:
+        print('please enter an integer')
+#ability_scores, experience_boost = ability_generator(prime_ability)
+experience_boost = experience_boost_determination(ability_scores, prime_ability)
+adjustments = ability_adjustments(prime_ability, ability_scores, char_level)
+#
+system_shock, hit_dice, hit_points, char_saves, to_hit = hit_dice_hit_points_and_saves(char_type, char_level, ability_scores)
+while True:
+    sex_choice = str(input('Would you like to select a sex?: ((y)es or (n)o) '))
+    sex_choice = sex_choice.lower()
+    sex_choice = sex_choice.rstrip()
+    if sex_choice == 'yes' or sex_choice == 'y':
+        sex = str(input('Please pick a sex: (M)ale or (F)emale '))
+        sex = sex.lower()
+        sex = sex.rstrip()
+        if sex == 'male' or sex == 'm':
+            sex_choice = 'male'
+        elif sex == 'female' or sex == 'f':
+            sex_choice = 'female'
+        break
+    elif sex_choice == 'no' or sex_choice == 'n':
+        sex_choice = 'random'
+        break
+    else:
+        print('please try again...')
 
-#need to show ability with prime shown/accounted for
+while True:
+    weight_choice = str(input('Select a weight class: (l)ight, (a)verage, or (h)eavy '))
+    weight_choice = weight_choice.lower()
+    weight_choice = weight_choice.rstrip()
+    if weight_choice == 'light' or weight_choice == 'l':
+        break
+    elif weight_choice == 'average' or weight_choice == 'a':
+        break
+    elif weight_choice == 'heavy' or weight_choice == 'h':
+        break
+    else:
+        print('please try again...')
+
+while True:
+    id_quality = str(input('Would you like your character to have an identifying quality? (y)es or (n)o '))
+    id_quality = id_quality.lower()
+    id_quality = id_quality.rstrip()
+    if id_quality == 'yes' or id_quality == 'y':
+        id_quality = True
+        break
+    elif id_quality == 'no' or id_quality == 'n':
+        id_quality = False
+        break
+    else:
+        print('please try again...')
+
+while True:
+    older = str(input('Would you like your character to be (o)lder or (y)ounger? '))
+    older = older.lower()
+    older = older.rstrip()
+    if older == 'older' or older == 'o':
+        older = True
+        break
+    elif older == 'younger' or older == 'y':
+        older = False
+        break
+    else:
+        print('please try again...')
+
+sex, age, height, weight, eye_color, hair_color, hair_type, hair_length, skin_color, handedness, dental_status, profession, maximum_load, id_quality, alignment = attributes(char_type, ability_scores, char_level, sex_choice, weight_choice, older, id_quality)
+profession_definition = profession_definition('professions_list.txt', profession)
+
+if char_type == 'cleric':
+    while True:
+        name_deity = str(input('Would you like to name your deity? (y)es or (n)o '))
+        name_deity = name_deity.lower()
+        name_deity = name_deity.rstrip()
+        if name_deity == 'yes' or name_deity == 'y':
+            name_deity = False
+            break
+        elif name_deity == 'no' or name_deity == 'n':
+            name_deity = True
+            break
+        else:
+            print('please try again...')
+
+    deity_name, domain, edict, anathema, turning_events, spell_slots = magical_capabilities(char_type, char_level, name_deity)
+
+elif char_type == 'magic user':
+    starting_spell, spell_slots = magical_capabilities(char_type, char_level)
+starting_gold = starting_gold()
+
+# ask for custom name or random name
+while True:
+    gen_name = str(input('Would you like to name your character? (y)es or (n)o '))
+    gen_name = gen_name.lower()
+    gen_name = gen_name.rstrip()
+    if gen_name == 'no' or gen_name == 'n':
+        while True:
+            title_prompt = str(input('Would you like the name of your character to have a title? (y)es or (n)o '))
+            title_prompt = title_prompt.lower()
+            title_prompt = title_prompt.rstrip()
+            if title_prompt == 'yes' or title_prompt == 'y':
+                Title = True
+                break
+            elif title_prompt == 'no' or title_prompt == 'n':
+                Title = False
+                break
+            else:
+                print('please try again...')
+        while True:
+            mult_barr_prompt = str(input('Would you like you charater to have a multibarrelled name? (y)es or (n)o '))
+            mult_barr_prompt = mult_barr_prompt.lower()
+            mult_barr_prompt = mult_barr_prompt.rstrip()
+            if mult_barr_prompt == 'yes' or mult_barr_prompt == 'y':
+                Mult_Barr = True
+                break
+            elif mult_barr_prompt == 'no' or mult_barr_prompt == 'n':
+                Mult_Barr = False
+                break
+            else:
+                print('please try again...')
+        name = name_generator(Title, Mult_Barr)
+        break
+    elif gen_name == 'yes' or gen_name == 'y':
+        name = 'TBD'
+        break
+    else:
+        print('please try again...')
+
+print('----------------------------------------')
+print('----------------------------------------')
+print('----------------------------------------')
+print('...and your character was birthed onto this land by the great and all-knowing Gylex...')
+print('----------------------------------------')
+print('----------------------------------------')
+print('----------------------------------------')
 print('Name: ', name)
 print('Class: ', char_type)
 print('Level: ', char_level)
@@ -542,9 +707,18 @@ print('Hit Points: ', hit_points)
 print('To-Hit: ', to_hit)
 print('----------------------------------------')
 print('Ability Scores:')
-print(ability_scores[0][0], ':', ability_scores[0][1])
-print(ability_scores[1][0], ':', ability_scores[1][1])
-print(ability_scores[2][0], ':', ability_scores[2][1])
+if char_type == 'fighter':
+    print(ability_scores[0][0], ':', '{}+{}'.format(ability_scores[0][1], char_level))
+else:
+    print(ability_scores[0][0], ':', ability_scores[0][1])
+if char_type == 'magic user':
+    print(ability_scores[1][0], ':', '{}+{}'.format(ability_scores[1][1], char_level))
+else:
+    print(ability_scores[1][0], ':', ability_scores[1][1])
+if char_type == 'cleric':
+    print(ability_scores[2][0], ':', '{}+{}'.format(ability_scores[2][1], char_level))
+else:
+    print(ability_scores[2][0], ':', ability_scores[2][1])
 print(ability_scores[3][0], ':', ability_scores[3][1])
 print(ability_scores[4][0], ':', ability_scores[4][1])
 print(ability_scores[5][0], ':', ability_scores[5][1])
@@ -569,7 +743,7 @@ print('----------------------------------------')
 print('Attributes:')
 print('Sex: ', sex)
 print('Age: ', age)
-print('Height', height)
+print('Height: ', height)
 print('Weight: ', weight)
 print('Eye Color: ', eye_color)
 print('Hair Color: ', hair_color)
@@ -578,14 +752,13 @@ print('Hair Length: ', hair_length)
 print('Skin Color: ', skin_color)
 print('Handedness: ', handedness)
 print('Dental Status: ', dental_status)
-print('Profession: ', profession)
-# profession definition print()
+print('Profession: ', profession, ':', profession_definition)
 print('Maximum Load: ', maximum_load)
-if id_quality:
+if id_quality or ability_scores[5][1] < 7:
     print('Identifying Quality: ', id_quality)
 print('Alignment: ', alignment)
 print('----------------------------------------')
-if char_type == 'Cleric':
+if char_type == 'cleric':
     print('Deity Name: ', deity_name)
     print('Domain: ', domain)
     print('Edict: ', edict)
@@ -593,7 +766,7 @@ if char_type == 'Cleric':
     print('Turning Events:', turning_events)
     print('Spell Slots: ', spell_slots)
     print('----------------------------------------')
-elif char_type == 'Magic User':
+elif char_type == 'magic user':
     print('Starting Spell: ', starting_spell)
     print('Spell Slots: ', spell_slots)
     print('----------------------------------------')
