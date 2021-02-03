@@ -2,7 +2,7 @@
 #---------------------
 #Name: OD&D Revived Character Generator
 #Version: 1.0
-#Date: 2020-12-20
+#Date: 2021-01-20
 #---------------------
 #max line = 79
 
@@ -92,6 +92,7 @@ def ability_adjustments(prime_ability, ability_scores, char_level):
     """
     adjustments = []
     abilities = ['Strength', 'Intelligence', 'Wisdom', 'Dexterity', 'Constitution', 'Charisma']
+    #prime adjustment not working
     prime = abilities.index(prime_ability) 
     ability_scores_with_prime = ability_scores
     ability_scores_with_prime[prime] = (prime_ability, (ability_scores[prime][1] + char_level))
@@ -154,23 +155,27 @@ def hit_dice_hit_points_and_saves(char_type, char_level, ability_scores):
             if char_level > 1:
                 hit_points = d_roll(os.urandom(16), t = 6, c = (whole_hit_dice - 1), m = (whole_hit_dice - 1))
             hit_points += 7
-            to_hit = '+{}, +{}'.format((whole_hit_dice + 1), (whole_hit_dice + 1))
+            to_hit = '+ {}, + {}'.format((whole_hit_dice + 1), (whole_hit_dice + 1))
         elif char_type == 'Cleric':
-            whole_hit_dice = char_level
+            hit_dice = char_level
             if char_level > 1:
                 hit_points = d_roll(os.urandom(16), t = 6, c = (hit_dice - 1), m = 0)
             hit_points += 6
-            to_hit = '+{}, +{}'.format(whole_hit_dice, whole_hit_dice)
+            to_hit = '+ {}, + {}'.format(hit_dice, hit_dice)
         elif char_type == 'Magic User':
-            if char_level % 2 == 1:
-                whole_hit_dice = (char_level // 2) + 1
-                hit_dice = '{} + 1'.format(whole_hit_dice)
-                hit_points = d_roll(os.urandom(16), t = 6, c = whole_hit_dice, m = 0)
-                to_hit = '+{}, +{}'.format((whole_hit_dice + 1), (whole_hit_dice + 1))
+            if char_level > 1:
+                if char_level % 2 == 0:
+                    whole_hit_dice = char_level // 2
+                    hit_dice = '{} + 1'.format(whole_hit_dice)
+                    hit_points = d_roll(os.urandom(16), t = 6, c = whole_hit_dice, m = 0)
+                    to_hit = '+ {}, + {}'.format((whole_hit_dice + 1), (whole_hit_dice + 1))
+                else:
+                    hit_dice = (char_level // 2) + 1
+                    hit_points = d_roll(os.urandom(16), t = 6, c = hit_dice, m = 1)
+                    to_hit = '+ {}, + {}'.format(hit_dice, hit_dice)
             else:
-                hit_dice = char_level // 2
-                hit_points = d_roll(os.urandom(16), t = 6, c = hit_dice, m = 1)
-                to_hit = '+{}, +{}'.format(whole_hit_dice, whole_hit_dice)
+                hit_dice = char_level
+                to_hit = '+ {}, + {}'.format(hit_dice, hit_dice)
             hit_points += 6
     if ability_scores[4][1] > 13:
         hit_points += whole_hit_dice
@@ -340,6 +345,8 @@ def magical_capabilities(char_type, char_level, name_deity = False):
     if char_type == 'Cleric':
         if name_deity == True:
             deity_name = name_generator(Title = False, Mult_Barr = False)
+        else:
+            deity_name = 'TBD'
         #domain
         domain_table = attribute_table_generator('domain_table.txt')
         domain_roll = d_roll(os.urandom(16), t = len(domain_table), c = 1, m = 0)
@@ -365,10 +372,7 @@ def magical_capabilities(char_type, char_level, name_deity = False):
         spell_slots_table = attribute_table_generator('magic_user_spell_slots_table.txt')
         spell_slots = spell_slots_table[char_level - 1]
     if char_type == 'Cleric':
-        if name_deity:
-            return deity_name, domain, edict, anathema, turning_events, spell_slots
-        else:
-            return domain, edict, anathema, turning_events, spell_slots
+        return deity_name, domain, edict, anathema, turning_events, spell_slots
     else:
         return starting_spell, spell_slots
 
@@ -443,29 +447,80 @@ def name_generator(Title = False, Mult_Barr = False):
         name += titles[title_roll - 1]
     return name
 
-
-
-
 #ask for generation method 
-generation_method = 'Classic'
-if generation_method == 'Classic':
+while True:
+    generation_method = str(input('Pick a generation method: (Classic or Revived)'))
+    generation_method.lower
+    if generation_method == 'classic':
+        break
+    elif generation_method == 'revived':
+        break
+    else:
+        print('try again...')
+
+if generation_method == 'classic':
     #ask for character class
-    char_level = 1
-    char_type = 'Fighter'
-    prime_ability = 'Strength'
+    while True:
+        char_type = str(input('Pick a character class: (Fighter, Cleric, or Magic User)'))
+        char_type.lower
+        if char_type == 'fighter':
+            prime_ability = 'Strength'
+            break
+        elif char_type == 'cleric':
+            prime_ability = 'Wisdom'
+            break
+        elif char_type == 'magic user':
+            prime_ability = 'Intelligence'
+            break
+        else:
+            print('try again...')
+    char_level = int(input('Enter a starting level:'))
+
     ability_scores, experience_boost = ability_generator(prime_ability)
     adjustments = ability_adjustments(prime_ability, ability_scores, char_level)
     #
     system_shock, hit_dice, hit_points, char_saves, to_hit = hit_dice_hit_points_and_saves(char_type, char_level, ability_scores)
-    sex_choice = 'Random'
-    weight_choice = 'Average'
+    while True:
+        sex_choice = str(input('Would you like to select a sex?: (yes or no)'))
+        sex_choice.lower
+        if sex_choice == 'yes' or char_type == 'y':
+            sex = str(input('Please pick a sex: (Male or Female)')
+            sex.lower
+            break
+        elif sex_choice == 'no' or sex_choice == 'n':
+            sex_choice == 'random'
+            break
+        else:
+            print('try again...')
+
+    while True:
+        weight_choice = str(input('Select a weight class?: (light, average, or heavy)'))
+        weight_choice.lower
+        if weight_choice == 'light':
+            break
+        elif weight_choice == 'average':
+            break
+        elif weight_choice == 'heavy':
+            break
+        else:
+            print('try again...')
+
     id_quality = False
-    sex, age, height, weight, eye_color, hair_color, hair_type, hair_length, skin_color, handedness, dental_status, profession, maximum_load, id_quality, alignment = attributes(char_type, ability_scores, char_level, sex_choice, weight_choice, older = False, id_quality = False)
-#
-#    magical_capabilities(char_type, char_level, name_deity = False)
+
+    older = False
+    sex, age, height, weight, eye_color, hair_color, hair_type, hair_length, skin_color, handedness, dental_status, profession, maximum_load, id_quality, alignment = attributes(char_type, ability_scores, char_level, sex_choice, weight_choice, older, id_quality)
+    if char_type == 'cleric':
+        name_deity = True
+        deity_name, domain, edict, anathema, turning_events, spell_slots = magical_capabilities(char_type, char_level, name_deity)
+    elif char_type == 'magic user':
+        starting_spell, spell_slots = magical_capabilities(char_type, char_level)
     starting_gold = starting_gold()
 #    ask for custom name or random name
-    name = name_generator(Title = False, Mult_Barr = False)
+    gen_name = 'yes'
+    if gen_name == 'yes':
+        name = name_generator(Title = False, Mult_Barr = False)
+    else:
+        name = 'TBD'
 #else:
 #    ability_generator()
 #    # show abilities and ask for character class
@@ -530,4 +585,16 @@ if id_quality:
     print('Identifying Quality: ', id_quality)
 print('Alignment: ', alignment)
 print('----------------------------------------')
-print('Starting Gold: ', starting_gold)
+if char_type == 'Cleric':
+    print('Deity Name: ', deity_name)
+    print('Domain: ', domain)
+    print('Edict: ', edict)
+    print('Anathema: ', anathema)
+    print('Turning Events:', turning_events)
+    print('Spell Slots: ', spell_slots)
+    print('----------------------------------------')
+elif char_type == 'Magic User':
+    print('Starting Spell: ', starting_spell)
+    print('Spell Slots: ', spell_slots)
+    print('----------------------------------------')
+print('Starting Gold: ', starting_gold, 'gp')
