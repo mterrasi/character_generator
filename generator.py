@@ -253,7 +253,7 @@ def attributes(char_type, ability_scores, char_level, sex_choice,
     This function generates the character's:
     profession,
     maximum load,
-    and algnment.
+    and alignment.
     """
     if sex_choice == 'random':
         sex_roll = d_roll(os.urandom(16), t = 2, c = 1, m = 0)
@@ -672,7 +672,7 @@ while True:
             else:
                 print('please try again...')
         while True:
-            mult_barr_prompt = str(input('Would you like you charater to have a multibarrelled name? (y)es or (n)o '))
+            mult_barr_prompt = str(input('Would you like you character to have a multibarrelled name? (y)es or (n)o '))
             mult_barr_prompt = mult_barr_prompt.lower()
             mult_barr_prompt = mult_barr_prompt.rstrip()
             if mult_barr_prompt == 'yes' or mult_barr_prompt == 'y':
