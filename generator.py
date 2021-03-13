@@ -530,7 +530,7 @@ print('----------------------------------------')
 
 #ask for character class
 while True:
-    char_type = str(input('Pick a class for your character: (F)ighter, (C)leric, (M)agic User, or (r)andom '))
+    char_type = str(input('Pick a class for your character: Fighter, Cleric, Magic User, or random (f/c/m/r) '))
     char_type = char_type.lower()
     char_type = char_type.rstrip()
     if char_type == 'fighter' or char_type == 'f':
@@ -573,11 +573,11 @@ adjustments = ability_adjustments(prime_ability, ability_scores, char_level)
 #
 system_shock, hit_dice, hit_points, char_saves, to_hit = hit_dice_hit_points_and_saves(char_type, char_level, ability_scores)
 while True:
-    sex_choice = str(input('Would you like to select a sex?: ((y)es or (n)o) '))
+    sex_choice = str(input('Would you like to select a sex?: (y/n) '))
     sex_choice = sex_choice.lower()
     sex_choice = sex_choice.rstrip()
     if sex_choice == 'yes' or sex_choice == 'y':
-        sex = str(input('Please pick a sex: (M)ale or (F)emale '))
+        sex = str(input('Please pick a sex: (m/f) '))
         sex = sex.lower()
         sex = sex.rstrip()
         if sex == 'male' or sex == 'm':
@@ -592,7 +592,7 @@ while True:
         print('please try again...')
 
 while True:
-    weight_choice = str(input('Select a weight class: (l)ight, (a)verage, or (h)eavy '))
+    weight_choice = str(input('Select a weight class: light, average, or heavy (l/a/h) '))
     weight_choice = weight_choice.lower()
     weight_choice = weight_choice.rstrip()
     if weight_choice == 'light' or weight_choice == 'l':
@@ -605,7 +605,7 @@ while True:
         print('please try again...')
 
 while True:
-    id_quality = str(input('Would you like your character to have an identifying quality? (y)es or (n)o '))
+    id_quality = str(input('Would you like your character to have an identifying quality? (y/n) '))
     id_quality = id_quality.lower()
     id_quality = id_quality.rstrip()
     if id_quality == 'yes' or id_quality == 'y':
@@ -618,7 +618,7 @@ while True:
         print('please try again...')
 
 while True:
-    older = str(input('Would you like your character to be (o)lder or (y)ounger? '))
+    older = str(input('Would you like your character to be older or younger? (o/y) '))
     older = older.lower()
     older = older.rstrip()
     if older == 'older' or older == 'o':
@@ -635,7 +635,7 @@ profession_definition = profession_definition('professions_list.txt', profession
 
 if char_type == 'cleric':
     while True:
-        name_deity = str(input('Would you like to name your deity? (y)es or (n)o '))
+        name_deity = str(input('Would you like to name your deity? (y/n) '))
         name_deity = name_deity.lower()
         name_deity = name_deity.rstrip()
         if name_deity == 'yes' or name_deity == 'y':
@@ -655,12 +655,12 @@ starting_gold = starting_gold()
 
 # ask for custom name or random name
 while True:
-    gen_name = str(input('Would you like to name your character? (y)es or (n)o '))
+    gen_name = str(input('Would you like to name your character? (y/n) '))
     gen_name = gen_name.lower()
     gen_name = gen_name.rstrip()
     if gen_name == 'no' or gen_name == 'n':
         while True:
-            title_prompt = str(input('Would you like the name of your character to have a title? (y)es or (n)o '))
+            title_prompt = str(input('Would you like the name of your character to have a title? (y/n) '))
             title_prompt = title_prompt.lower()
             title_prompt = title_prompt.rstrip()
             if title_prompt == 'yes' or title_prompt == 'y':
@@ -672,7 +672,7 @@ while True:
             else:
                 print('please try again...')
         while True:
-            mult_barr_prompt = str(input('Would you like you character to have a multibarrelled name? (y)es or (n)o '))
+            mult_barr_prompt = str(input('Would you like you character to have a multibarrelled name? (y/n) '))
             mult_barr_prompt = mult_barr_prompt.lower()
             mult_barr_prompt = mult_barr_prompt.rstrip()
             if mult_barr_prompt == 'yes' or mult_barr_prompt == 'y':
@@ -694,7 +694,6 @@ while True:
 print('----------------------------------------')
 print('----------------------------------------')
 print('----------------------------------------')
-print('...and your character was birthed onto this land by the great and all-knowing Gylex...')
 print('----------------------------------------')
 print('----------------------------------------')
 print('----------------------------------------')
