@@ -4,7 +4,7 @@
 #Version: 1.0
 #Date: 2021-02-03
 #---------------------
-#max line = 79
+
 
 import os
 import random
