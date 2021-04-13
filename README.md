@@ -1,6 +1,6 @@
 # Character Generator
 
-This program creates a character for the OSR tabletop D&D game in accordance with the Revived ruleset, produced by Blacktower Games. This repository contains the generator program, text files which are used to create the tables that the attributes are pulled from, along with a standalone name generator.
+This program creates a character for the tabletop D&D game in accordance with the Revived ruleset, produced by Blacktower Games. This repository contains the generator program, text files which are used to create the tables that the attributes are pulled from, along with a standalone name generator.
 
 # How the Program Works
 The generator program is run in the command line and is meant to replicate the normal process of creating a D&D character. Normally, to create a character, one would roll a set of dice 15-20 times and reference a set of corresponding tables to determine the character’s various attributes and abilities. The generator program contains a dice rolling function, as well as a function that creates indexible lists from the text files, as well as functions for each step laid out in the Revived ruleset. When run, the user is prompted to select a few options for the creation process such as character class and a starting level, and then the program goes ahead and makes all of the necessary rolls, indexing of tables, and prints out the character’s stats to the command line.
