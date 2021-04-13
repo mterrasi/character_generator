@@ -265,10 +265,10 @@ Pauper
 Peasant
 Peasant
 Peasant
+Peasant
 Peregrinator
 Perfumer
 Peruker
-Phrenologist
 Picker
 Pigman
 Playwright / Player
