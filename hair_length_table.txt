@@ -14,7 +14,7 @@ Neck / Shoulder
 Neck / Shoulder
 Neck / Shoulder
 Neck / Shoulder
-17 : Middle Back / Lower Back
-18 : Hip / Thigh
-19 : Knee / Calf
-20 : Foot / Ground
+Middle Back / Lower Back
+Hip / Thigh
+Knee / Calf
+Foot / Ground

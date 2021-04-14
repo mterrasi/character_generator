@@ -2,12 +2,13 @@
 #---------------------
 #Name: OD&D Revived Character Generator
 #Version: 1.0
-#Date: 2021-02-03
+#Date: 2021-04-14
 #---------------------
 
 import os
 import random
 import json
+from datetime import datetime
 
 def d_roll(s, t = 6, c = 1, m = 0, l = False, h = False):
     #Dice rolling: (random integer in range from 1 -> t (dice type)
@@ -145,7 +146,7 @@ def hit_dice_hit_points_and_saves(char_type, char_level, ability_scores):
     #Hit Dice, Hit Points, To-Hit
     hit_points = 0
     if char_level == 0:
-            if char_type == 'fighter':
+            if char_type == 'Fighter':
                 whole_hit_dice = 1
                 hit_dice = whole_hit_dice
                 hit_points = 6
@@ -156,7 +157,7 @@ def hit_dice_hit_points_and_saves(char_type, char_level, ability_scores):
                 hit_points = 3
                 to_hit = '+1, +1'
     else:
-        if char_type == 'fighter':
+        if char_type == 'Fighter':
             whole_hit_dice = char_level
             hit_dice_modifier = char_level
             hit_dice = '{}+{}'.format(whole_hit_dice, hit_dice_modifier)
@@ -164,14 +165,14 @@ def hit_dice_hit_points_and_saves(char_type, char_level, ability_scores):
                 hit_points = d_roll(os.urandom(16), t = 6, c = (whole_hit_dice - 1), m = (whole_hit_dice - 1))
             hit_points += 7
             to_hit = '+{}, +{}'.format((whole_hit_dice + 1), (whole_hit_dice + 1))
-        elif char_type == 'cleric':
+        elif char_type == 'Cleric':
             whole_hit_dice = char_level
             hit_dice = whole_hit_dice
             if char_level > 1:
                 hit_points = d_roll(os.urandom(16), t = 6, c = (hit_dice - 1), m = 0)
             hit_points += 6
             to_hit = '+{}, +{}'.format(hit_dice, hit_dice)
-        elif char_type == 'magic user':
+        elif char_type == 'Magic User':
             if char_level > 1:
                 if char_level % 2 == 0:
                     whole_hit_dice = char_level // 2
@@ -191,7 +192,7 @@ def hit_dice_hit_points_and_saves(char_type, char_level, ability_scores):
     if ability_scores[4][1] > 13:
         hit_points += whole_hit_dice
     #Calculate Saves
-    if char_type == 'fighter':
+    if char_type == 'Fighter':
         if char_level == 0:
             save_scores = [14, 15, 16, 17, 18]
         elif char_level < 4:
@@ -206,7 +207,7 @@ def hit_dice_hit_points_and_saves(char_type, char_level, ability_scores):
             save_scores = [4, 5, 6, 7, 8]
         else:
             save_scores= [2, 3, 4, 5, 6]
-    elif char_type == 'cleric':
+    elif char_type == 'Cleric':
         if char_level == 0:
             save_scores = [13, 14, 16, 18, 17]
         elif char_level < 5:
@@ -219,7 +220,7 @@ def hit_dice_hit_points_and_saves(char_type, char_level, ability_scores):
             save_scores = [5, 6, 8, 10, 9]
         else:
             save_scores= [3, 4, 6, 8, 7]
-    elif char_type == 'magic user':
+    elif char_type == 'Magic User':
         if char_level == 0:
             save_scores = [15, 16, 15, 18, 13]
         elif char_level < 6:
@@ -394,7 +395,7 @@ def magical_capabilities(char_type, char_level, name_deity = False):
     """
     This function generates the character's magical capabilities or holy powers.
     """
-    if char_type == 'cleric':
+    if char_type == 'Cleric':
         if name_deity == True:
             deity_name = name_generator(Title = False, Mult_Barr = False)
         else:
@@ -422,7 +423,7 @@ def magical_capabilities(char_type, char_level, name_deity = False):
             spell_slots = 'N/A'
         else:
             spell_slots = spell_slots_table[char_level - 1]
-    elif char_type == 'magic user':
+    elif char_type == 'Magic User':
         spell_table = attribute_table_generator('spell_table.txt')
         if char_level > 0:
             starting_spell_roll = d_roll(os.urandom(16), t = len(spell_table), c = 1, m = 0)
@@ -434,7 +435,7 @@ def magical_capabilities(char_type, char_level, name_deity = False):
             spell_slots = 'N/A'
         else:
             spell_slots = spell_slots_table[char_level - 1]
-    if char_type == 'cleric':
+    if char_type == 'Cleric':
         return deity_name, domain, edict, anathema, turning_events, spell_slots
     else:
         return starting_spell, spell_slots
@@ -534,29 +535,29 @@ while True:
     char_type = char_type.lower()
     char_type = char_type.rstrip()
     if char_type == 'fighter' or char_type == 'f':
-        char_type = 'fighter'
+        char_type = 'Fighter'
         prime_ability = 'Strength'
         break
     elif char_type == 'cleric' or char_type == 'c':
-        char_type = 'cleric'
+        char_type = 'Cleric'
         prime_ability = 'Wisdom'
         break
     elif char_type == 'magic user' or char_type == 'mu' or char_type == 'm':
-        char_type = 'magic user'
+        char_type = 'Magic User'
         prime_ability = 'Intelligence'
         break
     elif char_type == 'random' or char_type == 'r':
         char_type_roll = d_roll(os.urandom(16), t = 3, c = 1, m = 0)
         if char_type_roll == 1:
-            char_type = 'fighter'
+            char_type = 'Fighter'
             prime_ability = 'Strength'
             break
         elif char_type_roll == 2:
-            char_type = 'cleric'
+            char_type = 'Cleric'
             prime_ability = 'Wisdom' 
             break
         else:
-            char_type = 'magic user'
+            char_type = 'Magic User'
             prime_ability = 'Intelligence'
             break
     else:
@@ -633,7 +634,7 @@ while True:
 sex, age, height, weight, eye_color, hair_color, hair_type, hair_length, skin_color, handedness, dental_status, profession, maximum_load, id_quality, alignment = attributes(char_type, ability_scores, char_level, sex_choice, weight_choice, older, id_quality)
 profession_definition = profession_definition('professions_list.txt', profession)
 
-if char_type == 'cleric':
+if char_type == 'Cleric':
     while True:
         name_deity = str(input('Would you like to name your deity? (y/n) '))
         name_deity = name_deity.lower()
@@ -649,7 +650,7 @@ if char_type == 'cleric':
 
     deity_name, domain, edict, anathema, turning_events, spell_slots = magical_capabilities(char_type, char_level, name_deity)
 
-elif char_type == 'magic user':
+elif char_type == 'Magic User':
     starting_spell, spell_slots = magical_capabilities(char_type, char_level)
 starting_gold = starting_gold()
 
@@ -706,15 +707,15 @@ print('Hit Points: ', hit_points)
 print('To-Hit: ', to_hit)
 print('----------------------------------------')
 print('Ability Scores:')
-if char_type == 'fighter':
+if char_type == 'Fighter':
     print(ability_scores[0][0], ':', '{}+{}'.format(ability_scores[0][1], char_level))
 else:
     print(ability_scores[0][0], ':', ability_scores[0][1])
-if char_type == 'magic user':
+if char_type == 'Magic User':
     print(ability_scores[1][0], ':', '{}+{}'.format(ability_scores[1][1], char_level))
 else:
     print(ability_scores[1][0], ':', ability_scores[1][1])
-if char_type == 'cleric':
+if char_type == 'Cleric':
     print(ability_scores[2][0], ':', '{}+{}'.format(ability_scores[2][1], char_level))
 else:
     print(ability_scores[2][0], ':', ability_scores[2][1])
@@ -757,7 +758,7 @@ if id_quality or ability_scores[5][1] < 7:
     print('Identifying Quality: ', id_quality)
 print('Alignment: ', alignment)
 print('----------------------------------------')
-if char_type == 'cleric':
+if char_type == 'Cleric':
     print('Deity Name: ', deity_name)
     print('Domain: ', domain)
     print('Edict: ', edict)
@@ -765,19 +766,31 @@ if char_type == 'cleric':
     print('Turning Events:', turning_events)
     print('Spell Slots: ', spell_slots)
     print('----------------------------------------')
-elif char_type == 'magic user':
+elif char_type == 'Magic User':
     print('Starting Spell: ', starting_spell)
     print('Spell Slots: ', spell_slots)
     print('----------------------------------------')
 print('Starting Gold: ', starting_gold, 'gp')
 
-#only supports fighter character class
+#does not currently support spells/turning
+#need to add identifying quality to json
+#need to add hight to json
+
+#translates level into experience points for json output
 if char_level > 1:
-    level_xp = (2000 * 2**(char_level -2))
+    if char_type == 'Fighter' or char_type == 'Cleric':
+        level_xp = (2000 * 2**(char_level - 2))
+    elif char_type == 'Magic User':
+        level_xp = (2500 * 2**(char_level - 2))
 else:
     level_xp = 0
 
-print(json.dumps({
+now = str(datetime.now())
+character_file = now[:10] + '_' + name[:] + '_' + char_type + '.json'
+#iso 8601 date_name_class
+#character_file += '.json'
+output_file = open(character_file, 'w')
+output_file.write(json.dumps({
     "character": {
         "abilities": {
             "strength": ability_scores[0][1],
@@ -802,8 +815,8 @@ print(json.dumps({
                         "points": level_xp
                     }
                 ],
-                "class": 'Fighter',
-                "prime": 'strength',
+                "class": char_type,
+                "prime": prime_ability.lower(),
                 "spellbook": {
                     "spells": []
                 },
@@ -847,8 +860,13 @@ print(json.dumps({
         "hair_style": hair_type,
         "eye_color": eye_color,
         "skin_color": skin_color,
-        "appearance": [dental_status, handedness, profession, profession_definition]
+        "appearance": ['Dental status:', dental_status, handedness, profession, profession_definition]
     },
     "notes": [],
     "sessions": []
 }, sort_keys=True, indent=4))
+
+output_file.close()
+print('----------------------------------------')
+print('Character file output as', character_file)
+print('----------------------------------------')
