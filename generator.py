@@ -7,6 +7,7 @@
 
 import os
 import random
+import json
 
 def d_roll(s, t = 6, c = 1, m = 0, l = False, h = False):
     #Dice rolling: (random integer in range from 1 -> t (dice type)
@@ -769,3 +770,85 @@ elif char_type == 'magic user':
     print('Spell Slots: ', spell_slots)
     print('----------------------------------------')
 print('Starting Gold: ', starting_gold, 'gp')
+
+#only supports fighter character class
+if char_level > 1:
+    level_xp = (2000 * 2**(char_level -2))
+else:
+    level_xp = 0
+
+print(json.dumps({
+    "character": {
+        "abilities": {
+            "strength": ability_scores[0][1],
+            "intelligence": ability_scores[1][1],
+            "wisdom": ability_scores[2][1],
+            "dexterity": ability_scores[3][1],
+            "constitution": ability_scores[4][1],
+            "charisma": ability_scores[5][1]
+        },
+        "saving_throws": {
+            "system_shock": system_shock,
+            "poison": char_saves[0][1],
+            "paralysis": char_saves[1][1],
+            "petrification": char_saves[2][1],
+            "dragon_breath": char_saves[3][1],
+            "spell": char_saves[4][1] 
+        },
+        "experience": [
+            {
+                "experiences": [
+                    {
+                        "points": level_xp
+                    }
+                ],
+                "class": 'Fighter',
+                "prime": 'strength',
+                "spellbook": {
+                    "spells": []
+                },
+                "spells": [],
+                "bonus_xp": experience_boost
+            }
+        ],
+        "purse": {
+            "platinum": 0,
+            "gold": starting_gold,
+            "silver": 0,
+            "copper": 0,
+            "gems": []
+        },
+        "magic_items": [],
+        "known_languages": [
+            "Common"
+        ],
+        "weapons": [],
+        "armor": [],
+        "slung_items": [],
+        "spellbook": None,
+        "mounts": [],
+        "deleted": False,
+        "name": name,
+        "race": "Human",
+        "base_movement": 60,
+        "current_hp": hit_points,
+        "total_hp": hit_points,
+        "armor_class": 9,
+        "hirelings": [],
+        "age": age,
+        "sex": sex,
+        "alignment": alignment,
+        "profession": profession,
+        "height_foot": 5,
+        "height_inch": 11,
+        "weight": weight,
+        "hair_color": hair_color,
+        "hair_length": hair_length,
+        "hair_style": hair_type,
+        "eye_color": eye_color,
+        "skin_color": skin_color,
+        "appearance": [dental_status, handedness, profession, profession_definition]
+    },
+    "notes": [],
+    "sessions": []
+}, sort_keys=True, indent=4))
