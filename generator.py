@@ -772,9 +772,8 @@ elif char_type == 'Magic User':
     print('----------------------------------------')
 print('Starting Gold: ', starting_gold, 'gp')
 
-#does not currently support spells/turning
+#does not currently support cleric spells/turning
 #need to add identifying quality to json
-#need to add hight to json
 
 #translates level into experience points for json output
 if char_level > 1:
@@ -786,9 +785,60 @@ else:
     level_xp = 0
 
 now = str(datetime.now())
-character_file = now[:10] + '_' + name[:] + '_' + char_type + '.json'
+if char_type == 'Magic User':
+    char_type_print = 'Magic_User'
+else:
+    char_type_print = char_type
+character_file = now[:10] + '_' + name[:] + '_' + char_type_print + '.json'
 #iso 8601 date_name_class
-#character_file += '.json'
+
+#hight for json
+if sex == 'male':
+    if height == 'Very Short (4ft 8in - 4ft 11in)':
+        height_foot = 4
+        height_inch = 10
+    elif height == 'Short (5ft - 5ft 3in)':
+        height_foot = 5
+        height_inch = 2
+    elif height == 'Average (5ft 4in - 5ft 8in)':
+        height_foot = 5
+        height_inch = 7
+    elif height == 'Tall (5ft 9in - 6ft)':
+        height_foot = 5
+        height_inch = 11
+    else:
+        height_foot = 6
+        height_inch = 3
+else:
+    if height == 'Very Short (4ft 6in - 4ft 9in)':
+        height_foot = 4
+        height_inch = 8
+    elif height == 'Short (4ft 10in - 5ft 1in)':
+        height_foot = 5
+        height_inch = 0
+    elif height == 'Average (5ft 2in - 5ft 6in)':
+        height_foot = 5
+        height_inch = 5
+    elif height == 'Tall (5ft 7in - 5ft 10in)':
+        height_foot = 5
+        height_inch = 9
+    else:
+        height_foot = 6
+        height_inch = 1
+
+#inputs starting spell into json
+if char_type == 'Magic User' and char_level > 0:
+    spell = {"level": 1, "name": starting_spell}
+#elif char_type == 'Cleric' and char_level > 1:
+#    spells = 
+else:
+    spell = None
+
+if char_type == 'Cleric':
+    turning_event_stats = 'Turning Events: ' + turning_events
+else:
+    turning_event_stats = None
+
 output_file = open(character_file, 'w')
 output_file.write(json.dumps({
     "character": {
@@ -818,7 +868,9 @@ output_file.write(json.dumps({
                 "class": char_type,
                 "prime": prime_ability.lower(),
                 "spellbook": {
-                    "spells": []
+                    "spells": [
+                        spell
+                    ]
                 },
                 "spells": [],
                 "bonus_xp": experience_boost
@@ -852,15 +904,15 @@ output_file.write(json.dumps({
         "sex": sex,
         "alignment": alignment,
         "profession": profession,
-        "height_foot": 5,
-        "height_inch": 11,
+        "height_foot": height_foot,
+        "height_inch": height_inch,
         "weight": weight,
         "hair_color": hair_color,
         "hair_length": hair_length,
         "hair_style": hair_type,
         "eye_color": eye_color,
         "skin_color": skin_color,
-        "appearance": ['Dental status:', dental_status, handedness, profession, profession_definition]
+        "appearance": ['Dental status:', dental_status, handedness, profession, profession_definition, turning_event_stats]
     },
     "notes": [],
     "sessions": []
