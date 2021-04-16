@@ -836,8 +836,10 @@ else:
 
 if char_type == 'Cleric':
     turning_event_stats = 'Turning Events: ' + turning_events
+    god_stats = 'Deity Name: ' + deity_name + ', ' + 'Domain: ' + domain + ', ' + 'Edict: ' + edict + ', ' + 'Anathema: ' + anathema
 else:
     turning_event_stats = None
+    god_stats = None
 
 output_file = open(character_file, 'w')
 output_file.write(json.dumps({
@@ -912,7 +914,15 @@ output_file.write(json.dumps({
         "hair_style": hair_type,
         "eye_color": eye_color,
         "skin_color": skin_color,
-        "appearance": ['Dental status:', dental_status, handedness, profession, profession_definition, turning_event_stats]
+        "appearance": [
+            'Dental status:',
+            dental_status,
+            handedness,
+            profession,
+            profession_definition,
+            turning_event_stats,
+            god_stats
+        ]
     },
     "notes": [],
     "sessions": []
