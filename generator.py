@@ -841,6 +841,11 @@ else:
     turning_event_stats = None
     god_stats = None
 
+if id_quality == False:
+    id_quality = None
+else:
+    id_quality = id_quality + '\n'
+
 output_file = open(character_file, 'w')
 output_file.write(json.dumps({
     "character": {
@@ -915,11 +920,10 @@ output_file.write(json.dumps({
         "eye_color": eye_color,
         "skin_color": skin_color,
         "appearance": [
-            'Dental status:',
-            dental_status,
-            handedness,
-            profession,
-            profession_definition,
+            'Dental status: ' + dental_status + '\n', 
+            handedness + '\n',
+            id_quality,
+            profession + ': ' + profession_definition,
             turning_event_stats,
             god_stats
         ]
