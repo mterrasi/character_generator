@@ -2,7 +2,7 @@
 #---------------------
 #Name: OD&D Revived Character Generator
 #Version: 1.0
-#Date: 2021-04-14
+#Date: 2021-04-18
 #---------------------
 
 import os
@@ -772,9 +772,6 @@ elif char_type == 'Magic User':
     print('----------------------------------------')
 print('Starting Gold: ', starting_gold, 'gp')
 
-#does not currently support cleric spells/turning
-#need to add identifying quality to json
-
 #translates level into experience points for json output
 if char_level > 1:
     if char_type == 'Fighter' or char_type == 'Cleric':
@@ -835,8 +832,8 @@ else:
     spell = None
 
 if char_type == 'Cleric':
-    turning_event_stats = 'Turning Events: ' + turning_events
-    god_stats = 'Deity Name: ' + deity_name + ', ' + 'Domain: ' + domain + ', ' + 'Edict: ' + edict + ', ' + 'Anathema: ' + anathema
+    turning_event_stats = '\n' + 'Turning Events: ' + turning_events
+    god_stats = '\n' + 'Deity Name: ' + deity_name + ', ' + 'Domain: ' + domain + ', ' + 'Edict: ' + edict + ', ' + 'Anathema: ' + anathema
 else:
     turning_event_stats = None
     god_stats = None
@@ -844,7 +841,9 @@ else:
 if id_quality == False:
     id_quality = None
 else:
-    id_quality = id_quality + '\n'
+    id_quality = '\n' + 'Identifying Quality: ' + id_quality
+
+#Cleric Spells?
 
 output_file = open(character_file, 'w')
 output_file.write(json.dumps({
@@ -920,10 +919,10 @@ output_file.write(json.dumps({
         "eye_color": eye_color,
         "skin_color": skin_color,
         "appearance": [
-            'Dental status: ' + dental_status + '\n', 
-            handedness + '\n',
+            'Dental status: ' + dental_status, 
+            '\n' + handedness,
             id_quality,
-            profession + ': ' + profession_definition,
+            '\n' + profession + ': ' + profession_definition,
             turning_event_stats,
             god_stats
         ]
