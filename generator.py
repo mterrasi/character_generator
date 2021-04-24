@@ -827,6 +827,7 @@ else:
 if char_type == 'Magic User' and char_level > 0:
     spell = {"level": 1, "name": starting_spell}
 #elif char_type == 'Cleric' and char_level > 1:
+#    if char_level
 #    spells = 
 else:
     spell = None

@@ -1,0 +1,106 @@
+[
+    {
+        "level": 1,
+        "name":"Cure Light Wounds*"
+    },
+    {
+        "level":1,
+        "name":"Detect Evil*"
+    },
+    {
+        "level":1,
+        "name":"Detect Magic"
+    },
+    {
+        "level":1,
+        "name":"Light*"
+    },
+    {
+        "level":1,
+        "name":"Protection from Evil*"
+    },
+    {
+        "level":1,
+        "name":"Purify Food and Water*"
+    },
+    {
+        "level":2,
+        "name":"Bless*"
+    },
+    {
+        "level":2,
+        "name":"Find Traps"
+    },
+    {
+        "level":2,
+        "name":"Hold Person"
+    },
+    {
+        "level":2,
+        "name":"Speak with Animals"
+    },
+    {
+        "level":3,
+        "name":"Continual Light*"
+    },
+    {
+        "level":3,
+        "name":"Cure Disease*"
+    },
+    {
+        "level":3,
+        "name":"Locate Object"
+    },
+    {
+        "level":3,
+        "name":"Remove Curse"
+    },
+    {
+        "level":4,
+        "name":"Create Water"
+    },
+    {
+        "level":4,
+        "name":"Cure Serious Wounds*"
+    },
+    {
+        "level":4,
+        "name":"Neutralize Poison"
+    },
+    {
+        "level":4,
+        "name":"Protection from Evil, 10ft Radius*"
+    },
+    {
+        "level":4,
+        "name":"Speak with Plants"
+    },
+    {
+        "level":4,
+        "name":"Turn Sticks to Snakes"
+    },
+    {
+        "level":5,
+        "name":"Commune"
+    },
+    {
+        "level":5,
+        "name":"Create Food"
+    },
+    {
+        "level":5,
+        "name":"Dispel Evil*"
+    },
+    {
+        "level":5,
+        "name":"Insect Plague"
+    },
+    {
+        "level":5,
+        "name":"Quest"
+    },
+    {
+        "level":5,
+        "name":"Raise Dead*"
+    }
+]
