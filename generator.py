@@ -825,12 +825,17 @@ else:
 
 #inputs starting spell into json
 if char_type == 'Magic User' and char_level > 0:
-    spell = {"level": 1, "name": starting_spell}
-#elif char_type == 'Cleric' and char_level > 1:
-#    if char_level
-#    spells = 
+    spells = [{"level": 1, "name": starting_spell}]
+elif char_type == 'Cleric' and char_level > 1:
+    spells_level = char_level // 2
+    if spells_level > 5:
+        spells_level = 5
+    cleric_spell_filename = 'cleric_spells_level_' + str(spells_level) + '.json'
+    cleric_spell_file = open(cleric_spell_filename, 'r')
+    spells = json.load(cleric_spell_file)
+    cleric_spell_file.close()
 else:
-    spell = None
+    spells = []
 
 if char_type == 'Cleric':
     turning_event_stats = '\n' + 'Turning Events: ' + turning_events
@@ -844,7 +849,6 @@ if id_quality == False:
 else:
     id_quality = '\n' + 'Identifying Quality: ' + id_quality
 
-#Cleric Spells?
 
 output_file = open(character_file, 'w')
 output_file.write(json.dumps({
@@ -875,9 +879,7 @@ output_file.write(json.dumps({
                 "class": char_type,
                 "prime": prime_ability.lower(),
                 "spellbook": {
-                    "spells": [
-                        spell
-                    ]
+                    "spells": spells
                 },
                 "spells": [],
                 "bonus_xp": experience_boost
