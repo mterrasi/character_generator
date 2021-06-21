@@ -377,7 +377,7 @@ def attributes(char_type, ability_scores, char_level, sex_choice,
             hair_length, skin_color, handedness, dental_status, profession,
             maximum_load, id_quality, alignment)
 
-def profession_definition(filename, profession):
+def get_profession_definition(filename, profession):
     """
     This function reads a txt file and creates a list object containing the
     table used to pick attributes.
@@ -632,7 +632,7 @@ while True:
         print('please try again...')
 
 sex, age, height, weight, eye_color, hair_color, hair_type, hair_length, skin_color, handedness, dental_status, profession, maximum_load, id_quality, alignment = attributes(char_type, ability_scores, char_level, sex_choice, weight_choice, older, id_quality)
-profession_definition = profession_definition('professions_list.txt', profession)
+profession_definition = get_profession_definition('professions_list.txt', profession)
 
 if char_type == 'Cleric':
     while True:
