@@ -2,7 +2,7 @@
 #---------------------
 #Name: OD&D Revived Character Generator
 #Version: 1.0
-#Date: 2021-04-18
+#Date: 2021-06-21
 #---------------------
 
 import os
