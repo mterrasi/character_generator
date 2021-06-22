@@ -217,7 +217,7 @@ Rigger: one who works with the ropes, cables, or chains used to support a ship's
 Roper: a person who makes and sells rope woven from various materials.
 Rubbler: a quarry worker who sorts small stones and other byproducts of excavation.
 Saddler: one who makes saddles, harnesses, collars, and bridles for various mounts.
-Sailor, Boat: a person who operates a small watercra propelled by oars and / or sails.
+Sailor, Boat: a person who operates a small watercraft propelled by oars and / or sails.
 Sailor, Ship: a worker on a large seafaring vessel used to transport goods or conduct war.
 Salter: one who procures and sells various types of salt.
 Sapper: a siege engineer who specializes in fortification access via covered trench (sap).
@@ -234,7 +234,7 @@ Shearer: a person who removes and collects fleece from animals for textile use.
 Sheargrinder: one who sharpens shears, scissors, knives, and other small cutting tools.
 Shepherd: a person who tends, herds, feeds, and guards a flock of sheep.
 Shingler: one who uses wooden tiles to construct the roof of a structure or building.
-Shipwright: a person who designs, constructs, and repairs ships and other watercra.
+Shipwright: a person who designs, constructs, and repairs ships and other watercraft.
 Singer: a performer who utilizes their voice for the musical entertainment of others.
 Slave: a person who is the legal property of another and is required to comply.
 Smuggler: one who illicitly transports goods or individuals somewhere secretly.

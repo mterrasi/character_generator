@@ -1,0 +1,35 @@
+Level 1
+Cure Light Wounds*
+Detect Evil*
+Detect Magic
+Light*
+Protection from Evil*
+Purify Food and Water*
+
+Level 2
+Bless*
+Find Traps
+Hold Person
+Speak with Animals
+
+Level 3
+Continual Light*
+Cure Disease*
+Locate Object
+Remove Curse
+
+Level 4
+Create Water
+Cure Serious Wounds*
+Neutralize Poison
+Protection from Evil, 10ft Radius*
+Speak with Plants
+Turn Sticks to Snakes
+
+Level 5
+Commune
+Create Food
+Dispel Evil*
+Insect Plague
+Quest
+Raise Dead*
