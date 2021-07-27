@@ -112,7 +112,7 @@ def ability_adjustments(prime_ability, ability_scores, char_level):
         comp_chance = (ability_scores_with_prime[2][1] - 10) * 10
         adjustments.append('+{}% Chance Comprehend Spoken Language'.format(comp_chance))
     if ability_scores_with_prime[3][1] > 13:
-        adjustments.append('+1 Missle Weapon Damage')
+        adjustments.append('+1 Missile Weapon Damage')
     if ability_scores_with_prime[4][1] > 13:
         adjustments.append('+1 Hit Point per whole Hit Die')
     if ability_scores_with_prime[5][1] > 13:
