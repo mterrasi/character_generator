@@ -541,12 +541,25 @@ def lambda_handler(event, context):
 
     system_shock, hit_dice, hit_points, char_saves, to_hit = hit_dice_hit_points_and_saves(char_type, event['char_level'], ability_scores)
 
-    sex, age, height, weight, eye_color, hair_color, hair_type, hair_length, skin_color, handedness, dental_status, profession, maximum_load, id_quality, alignment = attributes(char_type, ability_scores, event['char_level'], event['sex_choice'], event['weight_choice'], event['older'], event['id_quality'])
+    if event["id_quality"] == "yes":
+        extra_id_quality = True
+    else:
+        extra_id_quality = False
+
+    if event['older'] == "yes":
+        set_older = True
+    else:
+        set_older = False
+    sex, age, height, weight, eye_color, hair_color, hair_type, hair_length, skin_color, handedness, dental_status, profession, maximum_load, id_quality, alignment = attributes(char_type, ability_scores, event['char_level'], event['sex_choice'], event['weight_choice'], set_older, extra_id_quality)
 
     profession_definition = get_profession_definition('professions_list.txt', profession)
 
     if char_type == 'Cleric':
-        deity_name, domain, edict, anathema, turning_events, spell_slots = magical_capabilities(char_type, event['char_level'], event['name_deity'])
+        if event['name_deity'] == "yes":
+            name_deity = True
+        else:
+            name_deity = False
+        deity_name, domain, edict, anathema, turning_events, spell_slots = magical_capabilities(char_type, event['char_level'], name_deity)
     elif char_type == 'Magic User':
         starting_spell, spell_slots = magical_capabilities(char_type, event['char_level'])
     else:
@@ -629,7 +642,9 @@ def lambda_handler(event, context):
 
     if id_quality == False:
         id_quality = None
+        id_quality_display = "n/a"
     else:
+        id_quality_display = id_quality
         id_quality = '\n' + 'Identifying Quality: ' + id_quality
 
     return {
@@ -720,9 +735,9 @@ def lambda_handler(event, context):
             "height": height,
             "dental_status": dental_status,
             "handedness": handedness,
-            "id_quality": id_quality,
+            "id_quality": id_quality_display,
             "profession": profession,
-            "profession_definition": profession_definition,
+            "profession_definition": profession_definition[:-1],
             "adjustments": adjustments,
             "hit_dice": str(hit_dice),
             "to_hit": to_hit,
