@@ -549,6 +549,8 @@ def lambda_handler(event, context):
         deity_name, domain, edict, anathema, turning_events, spell_slots = magical_capabilities(char_type, event['char_level'], event['name_deity'])
     elif char_type == 'Magic User':
         starting_spell, spell_slots = magical_capabilities(char_type, event['char_level'])
+    else:
+        spell_slots = None
 
     starting_gold = get_starting_gold()
 
@@ -620,6 +622,10 @@ def lambda_handler(event, context):
     else:
         turning_event_stats = None
         god_stats = None
+        deity_name = None
+        domain = None
+        edict = None
+        anathema = None
 
     if id_quality == False:
         id_quality = None
@@ -627,89 +633,105 @@ def lambda_handler(event, context):
         id_quality = '\n' + 'Identifying Quality: ' + id_quality
 
     return {
-        "character": {
-            "abilities": {
-                "strength": ability_scores[0][1],
-                "intelligence": ability_scores[1][1],
-                "wisdom": ability_scores[2][1],
-                "dexterity": ability_scores[3][1],
-                "constitution": ability_scores[4][1],
-                "charisma": ability_scores[5][1]
+        "ics": {
+            "character": {
+                "abilities": {
+                    "strength": ability_scores[0][1],
+                    "intelligence": ability_scores[1][1],
+                    "wisdom": ability_scores[2][1],
+                    "dexterity": ability_scores[3][1],
+                    "constitution": ability_scores[4][1],
+                    "charisma": ability_scores[5][1]
+                },
+                "saving_throws": {
+                    "system_shock": system_shock,
+                    "poison": char_saves[0][1],
+                    "paralysis": char_saves[1][1],
+                    "petrification": char_saves[2][1],
+                    "dragon_breath": char_saves[3][1],
+                    "spell": char_saves[4][1] 
+                },
+                "experience": [
+                    {
+                        "experiences": [
+                            {
+                                "points": level_xp
+                            }
+                        ],
+                        "class": char_type,
+                        "prime": prime_ability.lower(),
+                        "spellbook": {
+                            "spells": spells
+                        },
+                        "spells": [],
+                        "bonus_xp": experience_boost
+                    }
+                ],
+                "purse": {
+                    "platinum": 0,
+                    "gold": starting_gold,
+                    "silver": 0,
+                    "copper": 0,
+                    "gems": []
+                },
+                "magic_items": [],
+                "known_languages": [
+                    "Common"
+                ],
+                "weapons": [],
+                "armor": [],
+                "slung_items": [],
+                "spellbook": None,
+                "mounts": [],
+                "deleted": False,
+                "name": name,
+                "race": "Human",
+                "base_movement": 60,
+                "current_hp": hit_points,
+                "total_hp": hit_points,
+                "armor_class": 9,
+                "hirelings": [],
+                "age": age,
+                "sex": sex,
+                "alignment": alignment,
+                "profession": profession,
+                "height_foot": height_foot,
+                "height_inch": height_inch,
+                "weight": weight,
+                "hair_color": hair_color,
+                "hair_length": hair_length,
+                "hair_style": hair_type,
+                "eye_color": eye_color,
+                "skin_color": skin_color,
+                "appearance": [
+                    'Height: ' + height,
+                    '\n' + 'Dental status: ' + dental_status, 
+                    '\n' + handedness,
+                    id_quality,
+                    '\n' + profession + ': ' + profession_definition + '\n',
+                    turning_event_stats,
+                    god_stats
+                ]
             },
-            "saving_throws": {
-                "system_shock": system_shock,
-                "poison": char_saves[0][1],
-                "paralysis": char_saves[1][1],
-                "petrification": char_saves[2][1],
-                "dragon_breath": char_saves[3][1],
-                "spell": char_saves[4][1] 
-            },
-            "experience": [
-                {
-                    "experiences": [
-                        {
-                            "points": level_xp
-                        }
-                    ],
-                    "class": char_type,
-                    "prime": prime_ability.lower(),
-                    "spellbook": {
-                        "spells": spells
-                    },
-                    "spells": [],
-                    "bonus_xp": experience_boost
-                }
-            ],
-            "purse": {
-                "platinum": 0,
-                "gold": starting_gold,
-                "silver": 0,
-                "copper": 0,
-                "gems": []
-            },
-            "magic_items": [],
-            "known_languages": [
-                "Common"
-            ],
-            "weapons": [],
-            "armor": [],
-            "slung_items": [],
-            "spellbook": None,
-            "mounts": [],
-            "deleted": False,
-            "name": name,
-            "race": "Human",
-            "base_movement": 60,
-            "current_hp": hit_points,
-            "total_hp": hit_points,
-            "armor_class": 9,
-            "hirelings": [],
-            "age": age,
-            "sex": sex,
-            "alignment": alignment,
-            "profession": profession,
-            "height_foot": height_foot,
-            "height_inch": height_inch,
-            "weight": weight,
-            "hair_color": hair_color,
-            "hair_length": hair_length,
-            "hair_style": hair_type,
-            "eye_color": eye_color,
-            "skin_color": skin_color,
-            "appearance": [
-                'Height: ' + height,
-                '\n' + 'Dental status: ' + dental_status, 
-                '\n' + handedness,
-                id_quality,
-                '\n' + profession + ': ' + profession_definition + '\n',
-                adjustments,
-                '\n' + str(hit_dice),
-                '\n' + to_hit,
-                turning_event_stats,
-                god_stats
-            ]
+            "notes": [],
+            "sessions": []
         },
-        "notes": [],
-        "sessions": []
+        "display" : {
+            "height": height,
+            "dental_status": dental_status,
+            "handedness": handedness,
+            "id_quality": id_quality,
+            "profession": profession,
+            "profession_definition": profession_definition,
+            "adjustments": adjustments,
+            "hit_dice": str(hit_dice),
+            "to_hit": to_hit,
+            "turning_event_stats": turning_event_stats,
+            "deity_name": deity_name,
+            "domain": domain,
+            "edict": edict,
+            "anathema": anathema,
+            "spell_slots": spell_slots
+        }
     }
     
