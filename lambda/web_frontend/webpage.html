@@ -20,9 +20,9 @@
                             <ol>
                                 <li>To build a character&comma; click get started to generate the character&apos;s abilities</li>
                                 <li>Based on the abilities&comma; complete the form to select the parameters for the character to be generated&comma; or leave it set to random</li>
-                                <li>Click on generate character to send the parameters to the generator</li>
-                                <li>Optionally&comma; download at JSON file to use with the <a href="https://ics.blacktowergames.com/" target="_blank">interactive character sheet</a>&comma; made by Blacktower Games</li>
-                                <li>To reset the generator&comma; click on generate new character</li>
+                                <li>Click on create character to send the parameters to the generator</li>
+                                <li>Optionally&comma; click the download button to save a JSON file to use with the <a href="https://ics.blacktowergames.com/" target="_blank">interactive character sheet</a>&comma; made by Blacktower Games</li>
+                                <li>To create another character&comma; click reset</li>
                             </ol>
                             <button class="btn btn-dark btn-lg" onclick="getAbilities()">Get Started</button>
                         </div>
@@ -53,11 +53,33 @@
                                     <td class="col-md-3 fs-4" id="cha-table"></td>
                                 </tr>
                             </table>
+                            <!-- <br>
+                            <button class="btn btn-dark btn-lg" onclick="getAbilities()">Get Abilities</button> -->
                         </div>
+                        <!-- <br>
+                        <button class="btn btn-dark btn-lg" onclick="getAbilities()">Get Abilities</button> -->
                         <div id="user_input">
                             <form id="char_form" onsubmit="getAttributes()">
+                                <!-- <label for="strength" class="col-md-3 fs-4">Strength</label>
+                                <input type="text" name="strength" id="str-form" value="" readonly>
+                                <br>
+                                <label for="intelligence" class="col-md-3 fs-4">Intelligence</label>
+                                <input type="text" name="intelligence" id="int-form" value="" readonly>
+                                <br>
+                                <label for="wisdom" class="col-md-3 fs-4">Wisdom</label>
+                                <input type="text" name="wisdom" id="wis-form" value="" readonly>
+                                <br>
+                                <label for="dexterity" class="col-md-3 fs-4">Dexterity</label>
+                                <input type="text" name="dexterity" id="dex-form" value="" readonly>
+                                <br>
+                                <label for="constitution" class="col-md-3 fs-4">Constitution</label>
+                                <input type="text" name="constitution" id="con-form" value="" readonly>
+                                <br>
+                                <label for="charisma" class="col-md-3 fs-4">Charisma</label>
+                                <input type="text" name="charisma" id="cha-form" value="" readonly>
+                                <br> -->
                                 <label for="char_type" class="col-md-3 fs-4">Character Class</label>
-                                <select name="char_type" id="char_class">
+                                <select name="char_type" id="char_class" onchange="displayDeityName()">
                                     <option value="random" selected>Random</option>
                                     <option value="fighter">Fighter</option>
                                     <option value="cleric">Cleric</option>
@@ -83,18 +105,27 @@
                                 <br>
                                 <label for="id_quality" class="col-md-3 fs-4">Identifying Quality</label>
                                 <select name="id_quality" id="id_quality">
-                                    <option value="true">Yes</option>
-                                    <option value="false" selected>No</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no" selected>No</option>
                                 </select>
                                 <br>
                                 <label for="older" class="col-md-3 fs-4">Age</label>
                                 <select name="older" id="older">
-                                    <option value="false" selected>Younger</option>
-                                    <option value="true">Older</option>
+                                    <option value="no" selected>Younger</option>
+                                    <option value="yes">Older</option>
                                 </select>
                                 <br>
                                 <label for="char_name" class="col-md-3 fs-4">Character Name</label>
                                 <input type="text" name="char_name" id="char_name" placeholder="random">
+                                <br>
+                                <div id="deity_name_input">
+                                    <label for="name_deity" class="col-md-3 fs-4">Deity Name</label>
+                                    <select name="name_deity" id="name_deity">
+                                        <option value="no">Name Later</option>
+                                        <option value="yes" selected>Generate</option>
+                                    </select>
+                                    <br>
+                                </div>
                                 <br><br>
                                 <!-- <button type="submit" class="btn btn-dark btn-lg">Create Character</button> -->
                             </form>
@@ -164,6 +195,10 @@
                                 </tr>
                                 <tr>
                                     <th>Adjustments&colon;</th>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td id="adjustments"></td>
                                 </tr>
                                 <tr>
                                     <td>Experience Boost&colon;</td>
@@ -251,8 +286,16 @@
                                     <td id="dental"></td>
                                 </tr>
                                 <tr>
+                                    <td>Identifying Quality&colon;</td>
+                                    <td id="identifying_quality"></td>
+                                </tr>
+                                <tr>
                                     <td>Profession&colon;</td>
                                     <td id="profession"></td>
+                                </tr>
+                                <tr>
+                                    <td>Profession Definition&colon;</td>
+                                    <td id="prof_def"></td>
                                 </tr>
                                 <tr>
                                     <td>Maximum Load&colon;</td>
@@ -265,19 +308,77 @@
                                 <tr>
                                     <td><br></td>
                                 </tr>
+                                
                                 <tr>
                                     <td>Starting Gold&colon;</td>
                                     <td id="gold"></td>
                                 </tr>
+                                <tr>
+                                    <td><br></td>
+                                </tr>
                             </table>
+                            <div id="cleric_info">
+                                <table class="fs-4">
+                                    <tr>
+                                        <th>Deity Info&colon;</th>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Deity Name&colon;</td>
+                                        <td id="deity_name"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Domain&colon;</td>
+                                        <td id="domain"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Edict&colon;</td>
+                                        <td id="edict"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Anathema&colon;</td>
+                                        <td id="anathema"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Turning Events&colon;</td>
+                                        <td id="turning_events"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Spell Slots&colon;</td>
+                                        <td id="spell_slots_cleric"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="magic_info">
+                                <table class="fs-4">
+                                    <tr>
+                                        <td><br></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Magic Info&colon;</th>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Starting Spell&colon;</td>
+                                        <td id="starting_spell"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Spell Slots&colon;</td>
+                                        <td id="spell_slots_magic"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><br></td>
+                                    </tr>
+                                </table>
+                            </div>
                             <br>
-                            <button class="btn btn-dark btn-lg" onclick="resetGenerator()">Create Another Character</button>
-                            <br>
-                            <button class="btn btn-dark btn-lg" onclick="">Download JSON</button>
+                            <button class="btn btn-dark btn-lg" onclick="downloadCharacterSheet()">Download Character</button>
+                            <br><br>
+                            <button class="btn btn-dark btn-lg" onclick="resetGenerator()">Reset</button>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> 
 		</main>
         <footer>
             <!-- Insert footer -->
