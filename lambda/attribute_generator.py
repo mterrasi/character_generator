@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 #---------------------
-#Name: OD&D Revived Character Generator
+#Name: OD&D Revived Attribute Generator for Lambda
 #Version: 1.0
-#Date: 2021-06-21
+#Date: 2021-06-24
 #---------------------
 
 import os
@@ -511,445 +511,242 @@ def name_generator(Title = False, Mult_Barr = False):
         name += titles[title_roll - 1]
     return name
 
-print('----------------------------------------')
-print('----------------------------------------')
-print('Welcome to the Revived character generator!')
-print('----------------------------------------')
+def lambda_handler(event, context):
+    ability_scores = [('Strength', event['Strength']), ('Intelligence', event['Intelligence']), ('Wisdom', event['Wisdom']), ('Dexterity', event['Dexterity']), ('Constitution', event['Constitution']), ('Charisma', event['Charisma'])]
 
-# Generate abilities for character
-ability_scores = ability_generator()
-print('----------------------------------------')
-print('The abilities of your character are:')
-print('----------------------------------------')
-print(ability_scores[0][0], ':', ability_scores[0][1])
-print(ability_scores[1][0], ':', ability_scores[1][1])
-print(ability_scores[2][0], ':', ability_scores[2][1])
-print(ability_scores[3][0], ':', ability_scores[3][1])
-print(ability_scores[4][0], ':', ability_scores[4][1])
-print(ability_scores[5][0], ':', ability_scores[5][1])
-print('----------------------------------------')
-
-#ask for character class
-while True:
-    char_type = str(input('Pick a class for your character: Fighter, Cleric, Magic User, or random (f/c/m/r) '))
-    char_type = char_type.lower()
-    char_type = char_type.rstrip()
-    if char_type == 'fighter' or char_type == 'f':
+    if event['char_type'] == 'fighter':
         char_type = 'Fighter'
         prime_ability = 'Strength'
-        break
-    elif char_type == 'cleric' or char_type == 'c':
+    elif event['char_type'] == 'cleric':
         char_type = 'Cleric'
         prime_ability = 'Wisdom'
-        break
-    elif char_type == 'magic user' or char_type == 'mu' or char_type == 'm':
+    elif event['char_type'] == 'magic user':
         char_type = 'Magic User'
         prime_ability = 'Intelligence'
-        break
-    elif char_type == 'random' or char_type == 'r':
+    elif event['char_type'] == 'random':
         char_type_roll = d_roll(os.urandom(16), t = 3, c = 1, m = 0)
         if char_type_roll == 1:
             char_type = 'Fighter'
             prime_ability = 'Strength'
-            break
         elif char_type_roll == 2:
             char_type = 'Cleric'
             prime_ability = 'Wisdom' 
-            break
         else:
             char_type = 'Magic User'
             prime_ability = 'Intelligence'
-            break
-    else:
-        print('please try again...')
-while True:
-    try:
-        char_level = int(input('Enter a starting level: '))
-        break
-    except ValueError:
-        print('please enter an integer')
-#ability_scores, experience_boost = ability_generator(prime_ability)
-experience_boost = experience_boost_determination(ability_scores, prime_ability)
-adjustments = ability_adjustments(prime_ability, ability_scores, char_level)
-#
-system_shock, hit_dice, hit_points, char_saves, to_hit = hit_dice_hit_points_and_saves(char_type, char_level, ability_scores)
-while True:
-    sex_choice = str(input('Would you like to select a sex?: (y/n) '))
-    sex_choice = sex_choice.lower()
-    sex_choice = sex_choice.rstrip()
-    if sex_choice == 'yes' or sex_choice == 'y':
-        sex = str(input('Please pick a sex: (m/f) '))
-        sex = sex.lower()
-        sex = sex.rstrip()
-        if sex == 'male' or sex == 'm':
-            sex_choice = 'male'
-        elif sex == 'female' or sex == 'f':
-            sex_choice = 'female'
-        break
-    elif sex_choice == 'no' or sex_choice == 'n':
-        sex_choice = 'random'
-        break
-    else:
-        print('please try again...')
 
-while True:
-    weight_choice = str(input('Select a weight class: light, average, or heavy (l/a/h) '))
-    weight_choice = weight_choice.lower()
-    weight_choice = weight_choice.rstrip()
-    if weight_choice == 'light' or weight_choice == 'l':
-        break
-    elif weight_choice == 'average' or weight_choice == 'a':
-        break
-    elif weight_choice == 'heavy' or weight_choice == 'h':
-        break
+    experience_boost = experience_boost_determination(ability_scores, prime_ability)
+
+    adjustments = ability_adjustments(prime_ability, ability_scores, event['char_level'])
+
+    system_shock, hit_dice, hit_points, char_saves, to_hit = hit_dice_hit_points_and_saves(char_type, event['char_level'], ability_scores)
+
+    if event["id_quality"] == "yes":
+        extra_id_quality = True
     else:
-        print('please try again...')
+        extra_id_quality = False
 
-while True:
-    id_quality = str(input('Would you like your character to have an identifying quality? (y/n) '))
-    id_quality = id_quality.lower()
-    id_quality = id_quality.rstrip()
-    if id_quality == 'yes' or id_quality == 'y':
-        id_quality = True
-        break
-    elif id_quality == 'no' or id_quality == 'n':
-        id_quality = False
-        break
+    if event['older'] == "yes":
+        set_older = True
     else:
-        print('please try again...')
+        set_older = False
+    sex, age, height, weight, eye_color, hair_color, hair_type, hair_length, skin_color, handedness, dental_status, profession, maximum_load, id_quality, alignment = attributes(char_type, ability_scores, event['char_level'], event['sex_choice'], event['weight_choice'], set_older, extra_id_quality)
 
-while True:
-    older = str(input('Would you like your character to be older or younger? (o/y) '))
-    older = older.lower()
-    older = older.rstrip()
-    if older == 'older' or older == 'o':
-        older = True
-        break
-    elif older == 'younger' or older == 'y':
-        older = False
-        break
-    else:
-        print('please try again...')
+    profession_definition = get_profession_definition('professions_list.txt', profession)
 
-sex, age, height, weight, eye_color, hair_color, hair_type, hair_length, skin_color, handedness, dental_status, profession, maximum_load, id_quality, alignment = attributes(char_type, ability_scores, char_level, sex_choice, weight_choice, older, id_quality)
-profession_definition = get_profession_definition('professions_list.txt', profession)
-
-if char_type == 'Cleric':
-    while True:
-        name_deity = str(input('Would you like to name your deity? (y/n) '))
-        name_deity = name_deity.lower()
-        name_deity = name_deity.rstrip()
-        if name_deity == 'yes' or name_deity == 'y':
-            name_deity = False
-            break
-        elif name_deity == 'no' or name_deity == 'n':
+    if char_type == 'Cleric':
+        if event['name_deity'] == "yes":
             name_deity = True
-            break
         else:
-            print('please try again...')
-
-    deity_name, domain, edict, anathema, turning_events, spell_slots = magical_capabilities(char_type, char_level, name_deity)
-
-elif char_type == 'Magic User':
-    starting_spell, spell_slots = magical_capabilities(char_type, char_level)
-starting_gold = get_starting_gold()
-
-# ask for custom name or random name
-while True:
-    gen_name = str(input('Would you like to name your character? (y/n) '))
-    gen_name = gen_name.lower()
-    gen_name = gen_name.rstrip()
-    if gen_name == 'no' or gen_name == 'n':
-        while True:
-            title_prompt = str(input('Would you like the name of your character to have a title? (y/n) '))
-            title_prompt = title_prompt.lower()
-            title_prompt = title_prompt.rstrip()
-            if title_prompt == 'yes' or title_prompt == 'y':
-                Title = True
-                break
-            elif title_prompt == 'no' or title_prompt == 'n':
-                Title = False
-                break
-            else:
-                print('please try again...')
-        while True:
-            mult_barr_prompt = str(input('Would you like you character to have a multibarrelled name? (y/n) '))
-            mult_barr_prompt = mult_barr_prompt.lower()
-            mult_barr_prompt = mult_barr_prompt.rstrip()
-            if mult_barr_prompt == 'yes' or mult_barr_prompt == 'y':
-                Mult_Barr = True
-                break
-            elif mult_barr_prompt == 'no' or mult_barr_prompt == 'n':
-                Mult_Barr = False
-                break
-            else:
-                print('please try again...')
-        name = name_generator(Title, Mult_Barr)
-        break
-    elif gen_name == 'yes' or gen_name == 'y':
-        name = 'TBD'
-        break
-    else:
-        print('please try again...')
-
-#ask for json output file        
-while True:
-    output_json_file = str(input('Would you like your character sheet output to a json file? (y/n) '))
-    output_json_file = output_json_file.lower()
-    output_json_file = output_json_file.rstrip()
-    if output_json_file == 'no' or output_json_file == 'n':
-        produce_file = False
-        break
-    elif output_json_file == 'yes' or output_json_file == 'y':
-        produce_file = True
-        break
-    else:
-        print('please try again...')
-
-print('----------------------------------------')
-print('----------------------------------------')
-print('----------------------------------------')
-print('----------------------------------------')
-print('----------------------------------------')
-print('----------------------------------------')
-print('Name: ', name)
-print('Class: ', char_type)
-print('Level: ', char_level)
-print('----------------------------------------')
-print('Hit Dice: ', hit_dice)
-print('Hit Points: ', hit_points)
-print('To-Hit: ', to_hit)
-print('----------------------------------------')
-print('Ability Scores:')
-if char_type == 'Fighter':
-    print(ability_scores[0][0], ':', '{}+{}'.format(ability_scores[0][1], char_level))
-else:
-    print(ability_scores[0][0], ':', ability_scores[0][1])
-if char_type == 'Magic User':
-    print(ability_scores[1][0], ':', '{}+{}'.format(ability_scores[1][1], char_level))
-else:
-    print(ability_scores[1][0], ':', ability_scores[1][1])
-if char_type == 'Cleric':
-    print(ability_scores[2][0], ':', '{}+{}'.format(ability_scores[2][1], char_level))
-else:
-    print(ability_scores[2][0], ':', ability_scores[2][1])
-print(ability_scores[3][0], ':', ability_scores[3][1])
-print(ability_scores[4][0], ':', ability_scores[4][1])
-print(ability_scores[5][0], ':', ability_scores[5][1])
-print('----------------------------------------')
-if len(adjustments) != 0:
-    print('Adjustments:')
-    for adjustment in adjustments:
-        print(adjustment)
-else:
-    print('No Ability Adjustments')
-print('----------------------------------------')
-print('Experience Boost:', experience_boost)
-print('----------------------------------------')
-print('Saves:')
-print('System Shock: ', system_shock)
-print(char_saves[0][0], ':', char_saves[0][1])
-print(char_saves[1][0], ':', char_saves[1][1])
-print(char_saves[2][0], ':', char_saves[2][1])
-print(char_saves[3][0], ':', char_saves[3][1])
-print(char_saves[4][0], ':', char_saves[4][1])
-print('----------------------------------------')
-print('Attributes:')
-print('Sex: ', sex)
-print('Age: ', age)
-print('Height: ', height)
-print('Weight: ', weight)
-print('Eye Color: ', eye_color)
-print('Hair Color: ', hair_color)
-print('Hair Type: ', hair_type)
-print('Hair Length: ', hair_length)
-print('Skin Color: ', skin_color)
-print('Handedness: ', handedness)
-print('Dental Status: ', dental_status)
-print('Profession: ', profession, ':', profession_definition)
-print('Maximum Load: ', maximum_load)
-if id_quality or ability_scores[5][1] < 7:
-    print('Identifying Quality: ', id_quality)
-print('Alignment: ', alignment)
-print('----------------------------------------')
-if char_type == 'Cleric':
-    print('Deity Name: ', deity_name)
-    print('Domain: ', domain)
-    print('Edict: ', edict)
-    print('Anathema: ', anathema)
-    print('Turning Events:', turning_events)
-    print('Spell Slots: ', spell_slots)
-    print('----------------------------------------')
-elif char_type == 'Magic User':
-    print('Starting Spell: ', starting_spell)
-    print('Spell Slots: ', spell_slots)
-    print('----------------------------------------')
-print('Starting Gold: ', starting_gold, 'gp')
-
-#translates level into experience points for json output
-if char_level > 1:
-    if char_type == 'Fighter' or char_type == 'Cleric':
-        level_xp = (2000 * 2**(char_level - 2))
+            name_deity = False
+        deity_name, domain, edict, anathema, turning_events, spell_slots = magical_capabilities(char_type, event['char_level'], name_deity)
     elif char_type == 'Magic User':
-        level_xp = (2500 * 2**(char_level - 2))
-else:
-    level_xp = 0
-
-now = str(datetime.now())
-if char_type == 'Magic User':
-    char_type_print = 'Magic_User'
-else:
-    char_type_print = char_type
-character_file = now[:10] + '_' + name[:] + '_' + char_type_print + '.json'
-#iso 8601 date_name_class
-
-#hight for json
-if sex == 'male':
-    if height == 'Very Short (4ft 8in - 4ft 11in)':
-        height_foot = 4
-        height_inch = 10
-    elif height == 'Short (5ft - 5ft 3in)':
-        height_foot = 5
-        height_inch = 2
-    elif height == 'Average (5ft 4in - 5ft 8in)':
-        height_foot = 5
-        height_inch = 7
-    elif height == 'Tall (5ft 9in - 6ft)':
-        height_foot = 5
-        height_inch = 11
+        starting_spell, spell_slots = magical_capabilities(char_type, event['char_level'])
     else:
-        height_foot = 6
-        height_inch = 3
-else:
-    if height == 'Very Short (4ft 6in - 4ft 9in)':
-        height_foot = 4
-        height_inch = 8
-    elif height == 'Short (4ft 10in - 5ft 1in)':
-        height_foot = 5
-        height_inch = 0
-    elif height == 'Average (5ft 2in - 5ft 6in)':
-        height_foot = 5
-        height_inch = 5
-    elif height == 'Tall (5ft 7in - 5ft 10in)':
-        height_foot = 5
-        height_inch = 9
+        spell_slots = None
+
+    starting_gold = get_starting_gold()
+
+    if event['char_name'] == 'random':
+        name = name_generator()
     else:
-        height_foot = 6
-        height_inch = 1
+        name = event['char_name']
 
-#inputs starting spell into json
-if char_type == 'Magic User' and char_level > 0:
-    spells = [{"level": 1, "name": starting_spell}]
-elif char_type == 'Cleric' and char_level > 1:
-    spells_level = char_level // 2
-    if spells_level > 5:
-        spells_level = 5
-    cleric_spell_filename = 'cleric_spells_level_' + str(spells_level) + '.json'
-    cleric_spell_file = open(cleric_spell_filename, 'r')
-    spells = json.load(cleric_spell_file)
-    cleric_spell_file.close()
-else:
-    spells = []
+    #translates level into experience points for json output
+    if event['char_level'] > 1:
+        if char_type == 'Fighter' or char_type == 'Cleric':
+            level_xp = (2000 * 2**(event['char_level'] - 2))
+        elif char_type == 'Magic User':
+            level_xp = (2500 * 2**(event['char_level'] - 2))
+    else:
+        level_xp = 0
 
-if char_type == 'Cleric':
-    turning_event_stats = '\n' + 'Turning Events: ' + turning_events
-    god_stats = '\n' + 'Deity Name: ' + deity_name + ', ' + 'Domain: ' + domain + ', ' + 'Edict: ' + edict + ', ' + 'Anathema: ' + anathema
-else:
-    turning_event_stats = None
-    god_stats = None
+    #hight for json
+    if sex == 'male':
+        if height == 'Very Short (4ft 8in - 4ft 11in)':
+            height_foot = 4
+            height_inch = 10
+        elif height == 'Short (5ft - 5ft 3in)':
+            height_foot = 5
+            height_inch = 2
+        elif height == 'Average (5ft 4in - 5ft 8in)':
+            height_foot = 5
+            height_inch = 7
+        elif height == 'Tall (5ft 9in - 6ft)':
+            height_foot = 5
+            height_inch = 11
+        else:
+            height_foot = 6
+            height_inch = 3
+    else:
+        if height == 'Very Short (4ft 6in - 4ft 9in)':
+            height_foot = 4
+            height_inch = 8
+        elif height == 'Short (4ft 10in - 5ft 1in)':
+            height_foot = 5
+            height_inch = 0
+        elif height == 'Average (5ft 2in - 5ft 6in)':
+            height_foot = 5
+            height_inch = 5
+        elif height == 'Tall (5ft 7in - 5ft 10in)':
+            height_foot = 5
+            height_inch = 9
+        else:
+            height_foot = 6
+            height_inch = 1
 
-if id_quality == False:
-    id_quality = None
-else:
-    id_quality = '\n' + 'Identifying Quality: ' + id_quality
+    #inputs starting spell into json
+    if char_type == 'Magic User' and event['char_level'] > 0:
+        spells = [{"level": 1, "name": starting_spell}]
+    elif char_type == 'Cleric' and event['char_level'] > 1:
+        spells_level = event['char_level'] // 2
+        if spells_level > 5:
+            spells_level = 5
+        cleric_spell_filename = 'cleric_spells_level_' + str(spells_level) + '.json'
+        cleric_spell_file = open(cleric_spell_filename, 'r')
+        spells = json.load(cleric_spell_file)
+        cleric_spell_file.close()
+    else:
+        spells = []
 
+    if char_type == 'Cleric':
+        turning_event_stats = '\n' + 'Turning Events: ' + turning_events
+        god_stats = '\n' + 'Deity Name: ' + deity_name + ', ' + 'Domain: ' + domain + ', ' + 'Edict: ' + edict + ', ' + 'Anathema: ' + anathema
+    else:
+        turning_event_stats = None
+        god_stats = None
+        deity_name = None
+        domain = None
+        edict = None
+        anathema = None
 
-if produce_file:
-    output_file = open(character_file, 'w')
-    output_file.write(json.dumps({
-        "character": {
-            "abilities": {
-                "strength": ability_scores[0][1],
-                "intelligence": ability_scores[1][1],
-                "wisdom": ability_scores[2][1],
-                "dexterity": ability_scores[3][1],
-                "constitution": ability_scores[4][1],
-                "charisma": ability_scores[5][1]
+    if id_quality == False:
+        id_quality = None
+        id_quality_display = "n/a"
+    else:
+        id_quality_display = id_quality
+        id_quality = '\n' + 'Identifying Quality: ' + id_quality
+
+    return {
+        "ics": {
+            "character": {
+                "abilities": {
+                    "strength": ability_scores[0][1],
+                    "intelligence": ability_scores[1][1],
+                    "wisdom": ability_scores[2][1],
+                    "dexterity": ability_scores[3][1],
+                    "constitution": ability_scores[4][1],
+                    "charisma": ability_scores[5][1]
+                },
+                "saving_throws": {
+                    "system_shock": system_shock,
+                    "poison": char_saves[0][1],
+                    "paralysis": char_saves[1][1],
+                    "petrification": char_saves[2][1],
+                    "dragon_breath": char_saves[3][1],
+                    "spell": char_saves[4][1] 
+                },
+                "experience": [
+                    {
+                        "experiences": [
+                            {
+                                "points": level_xp
+                            }
+                        ],
+                        "class": char_type,
+                        "prime": prime_ability.lower(),
+                        "spellbook": {
+                            "spells": spells
+                        },
+                        "spells": [],
+                        "bonus_xp": experience_boost
+                    }
+                ],
+                "purse": {
+                    "platinum": 0,
+                    "gold": starting_gold,
+                    "silver": 0,
+                    "copper": 0,
+                    "gems": []
+                },
+                "magic_items": [],
+                "known_languages": [
+                    "Common"
+                ],
+                "weapons": [],
+                "armor": [],
+                "slung_items": [],
+                "spellbook": None,
+                "mounts": [],
+                "deleted": False,
+                "name": name,
+                "race": "Human",
+                "base_movement": 60,
+                "current_hp": hit_points,
+                "total_hp": hit_points,
+                "armor_class": 9,
+                "hirelings": [],
+                "age": age,
+                "sex": sex,
+                "alignment": alignment,
+                "profession": profession,
+                "height_foot": height_foot,
+                "height_inch": height_inch,
+                "weight": weight,
+                "hair_color": hair_color,
+                "hair_length": hair_length,
+                "hair_style": hair_type,
+                "eye_color": eye_color,
+                "skin_color": skin_color,
+                "appearance": [
+                    'Height: ' + height,
+                    '\n' + 'Dental status: ' + dental_status, 
+                    '\n' + handedness,
+                    id_quality,
+                    '\n' + profession + ': ' + profession_definition + '\n',
+                    turning_event_stats,
+                    god_stats
+                ]
             },
-            "saving_throws": {
-                "system_shock": system_shock,
-                "poison": char_saves[0][1],
-                "paralysis": char_saves[1][1],
-                "petrification": char_saves[2][1],
-                "dragon_breath": char_saves[3][1],
-                "spell": char_saves[4][1] 
-            },
-            "experience": [
-                {
-                    "experiences": [
-                        {
-                            "points": level_xp
-                        }
-                    ],
-                    "class": char_type,
-                    "prime": prime_ability.lower(),
-                    "spellbook": {
-                        "spells": spells
-                    },
-                    "spells": [],
-                    "bonus_xp": experience_boost
-                }
-            ],
-            "purse": {
-                "platinum": 0,
-                "gold": starting_gold,
-                "silver": 0,
-                "copper": 0,
-                "gems": []
-            },
-            "magic_items": [],
-            "known_languages": [
-                "Common"
-            ],
-            "weapons": [],
-            "armor": [],
-            "slung_items": [],
-            "spellbook": None,
-            "mounts": [],
-            "deleted": False,
-            "name": name,
-            "race": "Human",
-            "base_movement": 60,
-            "current_hp": hit_points,
-            "total_hp": hit_points,
-            "armor_class": 9,
-            "hirelings": [],
-            "age": age,
-            "sex": sex,
-            "alignment": alignment,
-            "profession": profession,
-            "height_foot": height_foot,
-            "height_inch": height_inch,
-            "weight": weight,
-            "hair_color": hair_color,
-            "hair_length": hair_length,
-            "hair_style": hair_type,
-            "eye_color": eye_color,
-            "skin_color": skin_color,
-            "appearance": [
-                'Dental status: ' + dental_status, 
-                '\n' + handedness,
-                id_quality,
-                '\n' + profession + ': ' + profession_definition,
-                turning_event_stats,
-                god_stats
-            ]
+            "notes": [],
+            "sessions": []
         },
-        "notes": [],
-        "sessions": []
-    }, sort_keys=True, indent=4))
-
-    output_file.close()
-    print('----------------------------------------')
-    print('Character file output as', character_file)
-    print('----------------------------------------')
+        "display" : {
+            "height": height,
+            "dental_status": dental_status,
+            "handedness": handedness,
+            "id_quality": id_quality_display,
+            "profession": profession,
+            "profession_definition": profession_definition[:-1],
+            "adjustments": adjustments,
+            "hit_dice": str(hit_dice),
+            "to_hit": to_hit,
+            "turning_event_stats": turning_event_stats,
+            "deity_name": deity_name,
+            "domain": domain,
+            "edict": edict,
+            "anathema": anathema,
+            "spell_slots": spell_slots
+        }
+    }
+    

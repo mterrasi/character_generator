@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Character Generator</title>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+		<link rel="stylesheet" href="stylesheet.css">
+		<script src="scripts.js"></script>
+	</head>
+	<body>
+		<header>
+			<!-- Insert navigation and headers here -->
+		</header>
+		<main>
+            <div class="container py-4">
+                <div class="p-5 mb-4 bg-light rounded-3">
+                    <div class="container-fluid py-5">
+                        <h1 class="display-5 fw-bold">Character Generator</h1>
+                        <div id="directions">
+                            <ol>
+                                <li>To build a character&comma; click get started to generate the character&apos;s abilities</li>
+                                <li>Based on the abilities&comma; complete the form to select the parameters for the character to be generated&comma; or leave it set to random</li>
+                                <li>Click on create character to send the parameters to the generator</li>
+                                <li>Optionally&comma; click the download button to save a JSON file to use with the <a href="https://ics.blacktowergames.com/" target="_blank">interactive character sheet</a>&comma; made by Blacktower Games</li>
+                                <li>To create another character&comma; click reset</li>
+                            </ol>
+                            <button class="btn btn-dark btn-lg" onclick="getAbilities()">Get Started</button>
+                        </div>
+                        <div id="ability_display">
+                            <table>
+                                <tr>
+                                    <td class="col-md-3 fs-4">Strength&colon;</td>
+                                    <td class="col-md-3 fs-4" id="str-table"></td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-3 fs-4">Intelligence&colon;</td>
+                                    <td class="col-md-3 fs-4" id="int-table"></td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-3 fs-4">Wisdom&colon;</td>
+                                    <td class="col-md-3 fs-4" id="wis-table"></td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-3 fs-4">Dexterity&colon;</td>
+                                    <td class="col-md-3 fs-4" id="dex-table"></td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-3 fs-4">Constitution&colon;</td>
+                                    <td class="col-md-3 fs-4" id="con-table"></td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-3 fs-4">Charisma&colon;</td>
+                                    <td class="col-md-3 fs-4" id="cha-table"></td>
+                                </tr>
+                            </table>
+                            <!-- <br>
+                            <button class="btn btn-dark btn-lg" onclick="getAbilities()">Get Abilities</button> -->
+                        </div>
+                        <!-- <br>
+                        <button class="btn btn-dark btn-lg" onclick="getAbilities()">Get Abilities</button> -->
+                        <div id="user_input">
+                            <form id="char_form" onsubmit="getAttributes()">
+                                <!-- <label for="strength" class="col-md-3 fs-4">Strength</label>
+                                <input type="text" name="strength" id="str-form" value="" readonly>
+                                <br>
+                                <label for="intelligence" class="col-md-3 fs-4">Intelligence</label>
+                                <input type="text" name="intelligence" id="int-form" value="" readonly>
+                                <br>
+                                <label for="wisdom" class="col-md-3 fs-4">Wisdom</label>
+                                <input type="text" name="wisdom" id="wis-form" value="" readonly>
+                                <br>
+                                <label for="dexterity" class="col-md-3 fs-4">Dexterity</label>
+                                <input type="text" name="dexterity" id="dex-form" value="" readonly>
+                                <br>
+                                <label for="constitution" class="col-md-3 fs-4">Constitution</label>
+                                <input type="text" name="constitution" id="con-form" value="" readonly>
+                                <br>
+                                <label for="charisma" class="col-md-3 fs-4">Charisma</label>
+                                <input type="text" name="charisma" id="cha-form" value="" readonly>
+                                <br> -->
+                                <label for="char_type" class="col-md-3 fs-4">Character Class</label>
+                                <select name="char_type" id="char_class" onchange="displayDeityName()">
+                                    <option value="random" selected>Random</option>
+                                    <option value="fighter">Fighter</option>
+                                    <option value="cleric">Cleric</option>
+                                    <option value="magic user">Magic User</option>
+                                </select>
+                                <br>
+                                <label for="char_level" class="col-md-3 fs-4">Character Level</label>
+                                <input type="number" name="char_level" placeholder="1" id="char_level">
+                                <br>
+                                <label for="sex_choice" class="col-md-3 fs-4">Character Sex</label>
+                                <select name="sex_choice" id="sex_choice">
+                                    <option value="random" selected>Random</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                                <br>
+                                <label for="weight_choice" class="col-md-3 fs-4">Weight Class</label>
+                                <select name="weight_choice" id="weight_choice">
+                                    <option value="light">Light</option>
+                                    <option value="average" selected>Average</option>
+                                    <option value="heavy">Heavy</option>
+                                </select>
+                                <br>
+                                <label for="id_quality" class="col-md-3 fs-4">Identifying Quality</label>
+                                <select name="id_quality" id="id_quality">
+                                    <option value="yes">Yes</option>
+                                    <option value="no" selected>No</option>
+                                </select>
+                                <br>
+                                <label for="older" class="col-md-3 fs-4">Age</label>
+                                <select name="older" id="older">
+                                    <option value="no" selected>Younger</option>
+                                    <option value="yes">Older</option>
+                                </select>
+                                <br>
+                                <label for="char_name" class="col-md-3 fs-4">Character Name</label>
+                                <input type="text" name="char_name" id="char_name" placeholder="random">
+                                <br>
+                                <div id="deity_name_input">
+                                    <label for="name_deity" class="col-md-3 fs-4">Deity Name</label>
+                                    <select name="name_deity" id="name_deity">
+                                        <option value="no">Name Later</option>
+                                        <option value="yes" selected>Generate</option>
+                                    </select>
+                                    <br>
+                                </div>
+                                <br><br>
+                                <!-- <button type="submit" class="btn btn-dark btn-lg">Create Character</button> -->
+                            </form>
+                            <button class="btn btn-dark btn-lg" onclick="getAttributes()">Create Character</button>
+                        </div>
+                        <div id="new_character">
+                            <table class="fs-4">
+                                <tr>
+                                    <td>Name&colon;</td>
+                                    <td id="name"></td>
+                                </tr>
+                                <tr>
+                                    <td>Class&colon;</td>
+                                    <td id="class"></td>
+                                </tr>
+                                <tr>
+                                    <td>Level&colon;</td>
+                                    <td id="level"></td>
+                                </tr>
+                                <tr>
+                                    <td><br></td>
+                                </tr>
+                                <tr>
+                                    <td>Hit Dice&colon;</td>
+                                    <td id="hit_dice"></td>
+                                </tr>
+                                <tr>
+                                    <td>Hit Points&colon;</td>
+                                    <td id="hit_points"></td>
+                                </tr>
+                                <tr>
+                                    <td>To-Hit&colon;</td>
+                                    <td id="to-hit"></td>
+                                </tr>
+                                <tr>
+                                    <td><br></td>
+                                </tr>
+                                <tr>
+                                    <th>Ability Scores&colon;</th>
+                                </tr>
+                                <tr>
+                                    <td>Strength&colon;</td>
+                                    <td id="str"></td>
+                                </tr>
+                                <tr>
+                                    <td>Intelligence&colon;</td>
+                                    <td id="int"></td>
+                                </tr>
+                                <tr>
+                                    <td>Wisdom&colon;</td>
+                                    <td id="wis"></td>
+                                </tr>
+                                <tr>
+                                    <td>Dexterity&colon;</td>
+                                    <td id="dex"></td>
+                                </tr>
+                                <tr>
+                                    <td>Constitution&colon;</td>
+                                    <td id="con"></td>
+                                </tr>
+                                <tr>
+                                    <td>Charisma&colon;</td>
+                                    <td id="cha"></td>
+                                </tr>
+                                <tr>
+                                    <td><br></td>
+                                </tr>
+                                <tr>
+                                    <th>Adjustments&colon;</th>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td id="adjustments"></td>
+                                </tr>
+                                <tr>
+                                    <td>Experience Boost&colon;</td>
+                                    <td id="xp_boost"></td>
+                                </tr>
+                                <tr>
+                                    <td><br></td>
+                                </tr>
+                                <tr>
+                                    <th>Saves&colon;</th>
+                                </tr>
+                                <tr>
+                                    <td>System Shock&colon;</td>
+                                    <td id="system_shock"></td>
+                                </tr>
+                                <tr>
+                                    <td>Death Ray&sol;Poison&colon;</td>
+                                    <td id="death_ray"></td>
+                                </tr>
+                                <tr>
+                                    <td>Wand&sol;Paralysis&sol;Polymorph&colon;</td>
+                                    <td id="wand"></td>
+                                </tr>
+                                <tr>
+                                    <td>Petrification&sol;Turn to Stone&colon;</td>
+                                    <td id="petrification"></td>
+                                </tr>
+                                <tr>
+                                    <td>Dragon Breath&sol;Area of Effect&colon;</td>
+                                    <td id="dragon_breath"></td>
+                                </tr>
+                                <tr>
+                                    <td>Spells&sol;Rods&sol;Staves&colon;</td>
+                                    <td id="spell_save"></td>
+                                </tr>
+                                <tr>
+                                    <td><br></td>
+                                </tr>
+                                <tr>
+                                    <th>Attributes&colon;</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Sex&colon;</td>
+                                    <td id="sex"></td>
+                                </tr>
+                                <tr>
+                                    <td>Age&colon;</td>
+                                    <td id="age"></td>
+                                </tr>
+                                <tr>
+                                    <td>Height&colon;</td>
+                                    <td id="height"></td>
+                                </tr>
+                                <tr>
+                                    <td>Weight&colon;</td>
+                                    <td id="weight"></td>
+                                </tr>
+                                <tr>
+                                    <td>Eye Color&colon;</td>
+                                    <td id="eyes"></td>
+                                </tr>
+                                <tr>
+                                    <td>Hair Color&colon;</td>
+                                    <td id="hair_color"></td>
+                                </tr>
+                                <tr>
+                                    <td>Hair Type&colon;</td>
+                                    <td id="hair_type"></td>
+                                </tr>
+                                <tr>
+                                    <td>Hair Length&colon;</td>
+                                    <td id="hair_length"></td>
+                                </tr>
+                                <tr>
+                                    <td>Skin Color&colon;</td>
+                                    <td id="skin"></td>
+                                </tr>
+                                <tr>
+                                    <td>Handedness&colon;</td>
+                                    <td id="hand"></td>
+                                </tr>
+                                <tr>
+                                    <td>Dental Status&colon;</td>
+                                    <td id="dental"></td>
+                                </tr>
+                                <tr>
+                                    <td>Identifying Quality&colon;</td>
+                                    <td id="identifying_quality"></td>
+                                </tr>
+                                <tr>
+                                    <td>Profession&colon;</td>
+                                    <td id="profession"></td>
+                                </tr>
+                                <tr>
+                                    <td>Profession Definition&colon;</td>
+                                    <td id="prof_def"></td>
+                                </tr>
+                                <tr>
+                                    <td>Maximum Load&colon;</td>
+                                    <td id="m_load"></td>
+                                </tr>
+                                <tr>
+                                    <td>Alignment&colon;</td>
+                                    <td id="alignment"></td>
+                                </tr>
+                                <tr>
+                                    <td><br></td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>Starting Gold&colon;</td>
+                                    <td id="gold"></td>
+                                </tr>
+                                <tr>
+                                    <td><br></td>
+                                </tr>
+                            </table>
+                            <div id="cleric_info">
+                                <table class="fs-4">
+                                    <tr>
+                                        <th>Deity Info&colon;</th>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Deity Name&colon;</td>
+                                        <td id="deity_name"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Domain&colon;</td>
+                                        <td id="domain"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Edict&colon;</td>
+                                        <td id="edict"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Anathema&colon;</td>
+                                        <td id="anathema"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Turning Events&colon;</td>
+                                        <td id="turning_events"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Spell Slots&colon;</td>
+                                        <td id="spell_slots_cleric"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="magic_info">
+                                <table class="fs-4">
+                                    <tr>
+                                        <td><br></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Magic Info&colon;</th>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Starting Spell&colon;</td>
+                                        <td id="starting_spell"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Spell Slots&colon;</td>
+                                        <td id="spell_slots_magic"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><br></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <br>
+                            <button class="btn btn-dark btn-lg" onclick="downloadCharacterSheet()">Download Character</button>
+                            <br><br>
+                            <button class="btn btn-dark btn-lg" onclick="resetGenerator()">Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+		</main>
+        <footer>
+            <!-- Insert footer -->
+        </footer>
+	</body>
+</html>
